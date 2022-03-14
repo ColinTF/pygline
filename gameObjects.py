@@ -4,12 +4,18 @@ import numpy as np
 
 # Components are attached to objects to make them unqiue and interact
 class component:
+
     def __init__(self, owner):
         self.owner = owner
 
-# Allow the object to be rendered to the screen
+    def update(self, delta_time):
+        pass
+
+# Allow the object to be re
+# ndered to the screen
 class renderer(component):
-    def __init__(self, owner, size=[50, 50], rel_location=np.zeros(2), color=(255,255,255)):
+
+    def __init__(self, owner, output, size=[50, 50], rel_location=np.zeros(2), color=(255,255,255)):
         super(renderer, self).__init__(owner)
 
         self.surf = pg.Surface(size)
@@ -19,17 +25,24 @@ class renderer(component):
 
         self.rect = self.surf.get_rect()
 
+        self.output = output
+
     # Draws the surface to the screen at its position
-    def update(self, screen, delta_time):
+    def update(self, delta_time):
+        super(renderer, self).update(delta_time)
+
         self.rect.topleft = self.owner.position + self.rel_location
-        screen.blit(self.surf, self.rect)
+        self.output.blit(self.surf, self.rect)
 
 # Allow the object to interact with the world
 class physics(component):
+
     def __init__(self, owner, mass=1, collision=True, gravity=False, passive=False):
         super(physics, self).__init__(owner)
 
         self.mass = mass
+
+        # Add appropriate tags to parent
         if collision:
             self.owner.add_tag('collision')
         if gravity:
@@ -40,18 +53,22 @@ class physics(component):
         self.acceleration = np.zeros(2)
         self.velocity = np.zeros(2)
 
+    # Update the postion using math and delta time
     def update(self, delta_time):
-        self.acceleration *= 0.8
+        super(physics, self).update(delta_time)
+
         self.velocity += self.acceleration * delta_time
         self.owner.position += self.velocity * delta_time
 
-    def accelerate(self, ammount, max):
-        # ammount = np.array(ammount) if isinstance(ammount, np.ndarray) else ammount
-        # max = np.array(max) if isinstance(ammount, np.ndarray) else max
+    # Apply a force to an object at it CM and calculate the resulting acceleration based on mass
+    def force(self, ammount, max_accel):
+
+        # Take the max between the normlized expected change and max then multiply it by the direction vector
         change = self.acceleration + ammount
         norm = np.linalg.norm(change)
-        accel = np.amin([norm, np.abs(max)])
-        self.acceleration = accel*change/norm
+        force = np.amin([norm, np.abs(max_accel)])
+        if norm >= 0.01:
+            self.acceleration = (force*change/norm) / self.mass
         
         
 
@@ -70,19 +87,20 @@ class GameObject:
         self.tags = []
         self.tags.extend(self.default_tags)
 
+        self.update_responsibilities = []
+
         self.position = pos
 
     # Update all components
-    def update(self, screen, delta_time):
-        for comp in self.components:
-            if isinstance(comp, renderer):
-                comp.update(screen, delta_time)
-            else:
-                comp.update(delta_time)
+    def update(self, delta_time):
+        for resposibilty in self.update_responsibilities:
+            resposibilty(delta_time)
 
+    # Add components as atrributes and add their update functions to the responsibilties list
+    def add_component(self, name, component):
+        setattr(self, name, component)
+        self.update_responsibilities.append(component.update)
 
-    def add_component(self, component):
-        setattr(self, component, component)
 
     # These next function allow for tag managment
     # say we want to loop through all our objects and

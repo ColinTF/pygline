@@ -22,32 +22,41 @@ def game(screen):
 
     print(f"\nStarting Game at Time: {scene1.last_time / 1000}s \n\n")
 
-    c = scene1.add_object(obj.GameObject('mover', pos=[0, SCREEN_HEIGHT/2-50], tags=['fast']), 'objects')
-    c.add_components(obj.renderer(c, size=[100, 100]))
-    c.add_components
+    mover = scene1.add_object(obj.GameObject('mover', pos=[0, SCREEN_HEIGHT/2-50], tags=['fast']), 'objects')
+    mover.add_component('renderer', obj.renderer(mover, screen, size=[100, 100]))
+    mover.add_component('physics', obj.physics(mover, mass=5))
 
     # When the scene return false end the main game loop
     running = True
     spawn_time = 250
     spawn_timer = 0
+    i = 0
     while running:
+
+        # Make the changes we want to make
+
+        if mover.position[0] < SCREEN_WIDTH/2-50:
+            mover.physics.force([20, 0], 100)
+        else:
+            mover.physics.force([-20, 0], 100)
+            
+
+        if scene1.time > spawn_timer:
+            print(mover.physics.velocity)
+            spawn_timer = scene1.time + spawn_time
+            i += 1
+
+            bullet = scene1.add_object(obj.GameObject('bullet'+str(i), pos=[mover.position[0]+50, SCREEN_HEIGHT/2-50]), 'bullets')
+            bullet.add_component('renderer', obj.renderer(bullet, screen, size=[10, 10]))
+            bullet.add_component('physics', obj.physics(bullet, mass=1))
+            bullet.physics.force([0, -25], 100)
+            bullet.renderer.surf.fill((255, 0, 0))
+
         # Update the scene by passing events to it
         running = scene1.update(pg.event.get(), screen)
-        if c.position[0] < SCREEN_WIDTH/2-50:
-            c.physics.accelerate([20, 0], 100)
-        else:
-            c.physics.accelerate([-20, 0], 100)
-        if scene1.time > spawn_timer:
-            spawn_timer = scene1.time + spawn_time
-            d = scene1.add_object(obj.GameObject(str(scene1.time+random.randint(0, 1000)), pos=[c.position[0]+50, SCREEN_HEIGHT/2-50], tags=['cool', 'fast']), 'dots')
-            d.render = obj.renderer(d, size=[5, 5])
-            d.add_components(d.render)
-            d.physics = obj.physics(d, mass=10)
-            d.add_components(d.physics)
-            d.physics.accelerate([0, -25], 200)
+
         
         # Push updates to display
-        print(c.physics.velocity)
         pg.display.flip()
 
     print(scene1)

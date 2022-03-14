@@ -75,7 +75,7 @@ class Scene:
 
         for object in self.get_objects(tags=['updates'], get='object'):
             if isinstance(object, obj.GameObject):
-                object.update(screen, self.delta_time)
+                object.update(self.delta_time)
             
 
         return self.running
