@@ -4,6 +4,8 @@ from pygame import time
 import numpy as np
 
 
+# test
+
 # This class will be the parent object to everything that can be seen or does something in the game
 # You can attach functionality to the object to make it do intresting stuff like a renderer
 class GameObject:
