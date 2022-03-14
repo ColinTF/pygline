@@ -6,8 +6,7 @@ import os
 import random
 
 #import our own custom classes
-import scene
-import gameObjects as obj
+import gamegine as gg
 
 
 # Define some paramters for the game
@@ -18,13 +17,13 @@ SCREEN_HEIGHT = 800
 def game(screen):
 
     # Create the main scene game
-    scene1 = scene.Scene()
+    scene1 = gg.Scene()
 
     print(f"\nStarting Game at Time: {scene1.last_time / 1000}s \n\n")
 
-    mover = scene1.add_object(obj.GameObject('mover', pos=[0, SCREEN_HEIGHT/2-50], tags=['fast']), 'objects')
-    mover.add_component('renderer', obj.renderer(mover, screen, size=[100, 100]))
-    mover.add_component('physics', obj.physics(mover, mass=5))
+    mover = scene1.add_object(gg.GameObject('mover', pos=[0, SCREEN_HEIGHT/2-50], tags=['fast']), 'objects')
+    mover.add_component('renderer', gg.renderer(mover, screen, size=[100, 100]))
+    mover.add_component('physics', gg.physics(mover, mass=5))
 
     # When the scene return false end the main game loop
     running = True
@@ -46,9 +45,9 @@ def game(screen):
             spawn_timer = scene1.time + spawn_time
             i += 1
 
-            bullet = scene1.add_object(obj.GameObject('bullet'+str(i), pos=[mover.position[0]+50, SCREEN_HEIGHT/2-50]), 'bullets')
-            bullet.add_component('renderer', obj.renderer(bullet, screen, size=[10, 10]))
-            bullet.add_component('physics', obj.physics(bullet, mass=1))
+            bullet = scene1.add_object(gg.GameObject('bullet'+str(i), pos=[mover.position[0]+50, SCREEN_HEIGHT/2-50]), 'bullets')
+            bullet.add_component('renderer', gg.renderer(bullet, screen, size=[10, 10]))
+            bullet.add_component('physics', gg.physics(bullet, mass=1))
             bullet.physics.force([0, -25], 100)
             bullet.renderer.surf.fill((255, 0, 0))
 
