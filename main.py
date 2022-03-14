@@ -3,6 +3,8 @@ import numpy as np
 import pygame as pg
 import os
 
+import random
+
 #import our own custom classes
 import scene
 import gameObjects as obj
@@ -20,45 +22,35 @@ def game(screen):
 
     print(f"\nStarting Game at Time: {scene1.last_time / 1000}s \n\n")
 
-    c = obj.GameObject("Colin")
-    b = obj.GameObject("Ben")
-
-    orange = obj.GameObject("Fruit2")
-
-    scene1.add_object(c, "People")
-    c.add_tag('blue')
-    scene1.add_object(b, "People")
-    scene1.add_object(obj.GameObject("Fruit1"), "main")
-    scene1.add_object(orange, "main")
-    orange.add_tag('tasty')
-    scene1.add_object(obj.GameObject("Number"), "ints")
-    scene1.get_objects(groups=['main'])['Fruit1'].add_tag('blue')
-    scene1.add_object(obj.GameObject("Float"), "floats")
-    scene1.get_objects(groups=['floats'])['Float'].add_tag('blue')
-
-    scene1.rm_objects([c, b], announce=True)
-    scene1.rm_objects(["Number", b], announce=True)
-
-    print(scene1.get_objects(names=['Fruit1', 'Fruit2']))
-    print(scene1.get_objects(tags=['blue'], groups=['People', 'ints', 'main'], op='or'))
-    print(scene1.get_objects(tags=['tasty']))
-
-    scene1.move_object(orange, 'default')
-    orange.add_tag('medium')
-
-    scene1.merge_group('floats', 'main')
-    scene1.merge_group('main')
-
-
-    # print(scene1)
+    c = scene1.add_object(obj.GameObject('mover', pos=[0, SCREEN_HEIGHT/2-50], tags=['fast']), 'objects')
+    c.add_components(obj.renderer(c, size=[100, 100]))
+    c.add_components
 
     # When the scene return false end the main game loop
     running = True
+    spawn_time = 250
+    spawn_timer = 0
     while running:
         # Update the scene by passing events to it
-        running = scene1.update(pg.event.get())
+        running = scene1.update(pg.event.get(), screen)
+        if c.position[0] < SCREEN_WIDTH/2-50:
+            c.physics.accelerate([20, 0], 100)
+        else:
+            c.physics.accelerate([-20, 0], 100)
+        if scene1.time > spawn_timer:
+            spawn_timer = scene1.time + spawn_time
+            d = scene1.add_object(obj.GameObject(str(scene1.time+random.randint(0, 1000)), pos=[c.position[0]+50, SCREEN_HEIGHT/2-50], tags=['cool', 'fast']), 'dots')
+            d.render = obj.renderer(d, size=[5, 5])
+            d.add_components(d.render)
+            d.physics = obj.physics(d, mass=10)
+            d.add_components(d.physics)
+            d.physics.accelerate([0, -25], 200)
+        
         # Push updates to display
+        print(c.physics.velocity)
         pg.display.flip()
+
+    print(scene1)
 
     # after our game loop ends we must quit pygame
     print(f"\n\nEnding Game at Time: {scene1.last_time / 1000}s \n")

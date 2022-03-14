@@ -52,7 +52,10 @@ class Scene:
         self.running = True
 
     # Update the whole scene with delta time
-    def update(self, events):
+    def update(self, events, screen):
+
+        # Clear the screen
+        screen.fill((0, 0, 0))
 
         #Update time and delta time
         self.time = time.get_ticks()
@@ -70,6 +73,11 @@ class Scene:
             elif event.type == QUIT:
                 self.running = False
 
+        for object in self.get_objects(tags=['updates'], get='object'):
+            if isinstance(object, obj.GameObject):
+                object.update(screen, self.delta_time)
+            
+
         return self.running
 
     # This next section if for object managment
@@ -81,22 +89,26 @@ class Scene:
             self.groups[dest_group][object._name] = object
         else:
             self.groups[dest_group] = {object._name : object}
+        return object
 
     # Retrive objects by name/tag/group this will be usefull for our other class functions
     # If specified names, ignore all other critera and the op
     # op can be 'and'/'or' it determines if the object must meet 1 or all criteria
     # Depedning on the # of objects/groups in a scene, the critera and operator these could take a while to run
+    # get is chooses to return a list of either names/objects
     # TODO Speed these up cause I bet they are slow
-    def get_objects(self, names=[], tags=[], groups=[], op='and'):
+    def get_objects(self, names=[], tags=[], groups=[], op='and', get='name'):
         
-        objects = {}
+        objects = []
+
+        return_names = (get == 'name')
 
         if not not names:
             # Check every object in every group if its name matches a name in names
             for group in self.groups:
                     for object in self.groups[group]:
                         if object in names:
-                            objects[object] = self.groups[group][object]
+                            objects.append(object if return_names else self.groups[group][object])
 
         else:
 
@@ -114,9 +126,9 @@ class Scene:
                     if use_tags:
                         for object in self.groups[group]:
                             if self.groups[group][object].has_tags(tags):
-                                objects[object] = self.groups[group][object]
+                                objects.append(object if return_names else self.groups[group][object])
                     else:
-                        objects.update(self.groups[group])
+                        objects.extend([*self.groups[group]] if return_names else self.groups[group])
 
             # If no groups are passed, dont get object by group, but we still need to check every group
             elif op == 'or': 
@@ -124,13 +136,13 @@ class Scene:
                 for group in self.groups:
                     # The groups is a selected group return all objects inside
                     if group in groups:
-                        objects.update(self.groups[group])
+                        objects.extend([*self.groups[group]] if return_names else self.groups[group])
                     else:
                         if use_tags:
                             for object in self.groups[group]:
                                 # Kind of a crazy line of code huh? I think its still readable......
                                 if any(self.groups[group][object].has_tags(tag) for tag in tags):
-                                    objects[object] = self.groups[group][object]
+                                    objects.append(object if return_names else self.groups[group][object])
 
         return objects
 
