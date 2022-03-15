@@ -2,6 +2,7 @@
 import pygame as pg
 import numpy as np
 
+# Import some constants we will refer too
 from pygame.locals import (
     K_UP,
     K_DOWN,
@@ -16,6 +17,8 @@ from pygame.locals import (
     QUIT,
 )
 
+GRAVITY = 9.81
+
 # Components are attached to objects to make them unqiue and interact
 class component:
 
@@ -25,12 +28,15 @@ class component:
     def update(self, delta_time):
         pass
 
+    def kill(self):
+        pass
+
 # Allow the object to be re
 # ndered to the screen
 class renderer(component):
 
     def __init__(self, owner, output, size=[50, 50], rel_location=np.zeros(2), color=(255,255,255)):
-        super(renderer, self).__init__(owner)
+        super().__init__(owner)
 
         self.surf = pg.Surface(size)
         self.surf.fill(color)
@@ -43,7 +49,7 @@ class renderer(component):
 
     # Draws the surface to the screen at its position
     def update(self, delta_time):
-        super(renderer, self).update(delta_time)
+        super().update(delta_time)
 
         self.rect.topleft = self.owner.position + self.rel_location
         self.output.blit(self.surf, self.rect)
@@ -64,6 +70,7 @@ class physics(component):
         if passive:
             self.owner.add_tag('passive')
 
+        self.forces = np.array([0, self.mass * GRAVITY]) if self.owner.has_tags(['gravity']) else np.zeros(2)
         self.acceleration = np.zeros(2)
         self.velocity = np.zeros(2)
 
@@ -71,18 +78,25 @@ class physics(component):
     def update(self, delta_time):
         super(physics, self).update(delta_time)
 
+        self.acceleration = self.forces / self.mass
         self.velocity += self.acceleration * delta_time
         self.owner.position += self.velocity * delta_time
 
-    # Apply a force to an object at it CM and calculate the resulting acceleration based on mass
-    def force(self, ammount, max_accel):
+    # Set the force at CM
+    def set_force(self, force):
 
-        # Take the max between the normlized expected change and max then multiply it by the direction vector
-        change = self.acceleration + ammount
-        norm = np.linalg.norm(change)
-        force = np.amin([norm, np.abs(max_accel)])
-        if norm >= 0.01:
-            self.acceleration = (force*change/norm) / self.mass
+        # Make sure the force has a gravity applied if applicable
+        self.forces = np.add(force, [0, (self.mass * GRAVITY) if self.owner.has_tags(['gravity']) else 0])
+
+    # Add Force at CM
+    def add_force(self, force):
+
+        if isinstance(force, np.ndarray):
+            self.forces += force
+        else:
+            self.forces += np.array(force)
+
+    
         
         
 
@@ -97,10 +111,11 @@ class GameObject:
     # Names should be unique
     def __init__(self, name, pos=np.zeros(2), tags=[]):
         self._name = name
-        self._creation_time = pg.time.get_ticks()
+        self._creation_time = pg.time.get_ticks() / 1000.0
         self.tags = []
         self.tags.extend(self.default_tags)
 
+        self.components = []
         self.update_responsibilities = []
 
         self.position = pos
@@ -113,7 +128,15 @@ class GameObject:
     # Add components as atrributes and add their update functions to the responsibilties list
     def add_component(self, name, component):
         setattr(self, name, component)
+        self.components.append(name)
         self.update_responsibilities.append(component.update)
+
+    def rm_component(self, name, component):
+        self.components.remove(name)
+        self.component.kill()
+        self.update_responsibilities.remove(component.update)
+        delattr(self, name)
+        
 
 
     # These next function allow for tag managment
@@ -139,6 +162,8 @@ class GameObject:
     def kill(self, announce=False):
         if announce:
             print(f"'{self._name}' has been killed and removed")
+        for comp in self.components:
+            self.components.remove(comp)
 
     # Functions that add functionalty to print the class
     def __repr__(self):
@@ -161,11 +186,7 @@ class GameObject:
 
 
 
-# This class will manage all our objects and updates will update our scene
-# 
-# I have yet to figure out what objects will manage physics but this will
-# still hold time and delta time variables
-# 
+# This class will manage all our objects and updates, will update our scene
 class Scene:
 
 
@@ -178,9 +199,9 @@ class Scene:
         self.groups = {'default': {}}
 
         # Init Time and Delta time, althought delta time starts as 0
-        self.time = pg.time.get_ticks()
+        self.time = pg.time.get_ticks() / 1000.0
         self.last_time = self.time
-        self.delta_time = (self.time - self.last_time) / 1000.0
+        self.delta_time = (self.time - self.last_time)
 
         # Running is a boolean the update function will return to tell if the scene is still good
         self.running = True
@@ -192,8 +213,8 @@ class Scene:
         screen.fill((0, 0, 0))
 
         #Update time and delta time
-        self.time = pg.time.get_ticks()
-        self.delta_time = (self.time - self.last_time) / 1000.0
+        self.time = pg.time.get_ticks() / 1000.0
+        self.delta_time = (self.time - self.last_time)
         self.last_time = self.time
 
         # This chunk will handle all our events
@@ -207,9 +228,8 @@ class Scene:
             elif event.type == QUIT:
                 self.running = False
 
-        for object in self.get_objects(tags=['updates'], get='object'):
-            if isinstance(object, GameObject):
-                object.update(self.delta_time)
+        for object in self.get_objects(tags=['updates']):
+            object.update(self.delta_time)
             
 
         return self.running
@@ -231,7 +251,7 @@ class Scene:
     # Depedning on the # of objects/groups in a scene, the critera and operator these could take a while to run
     # get is chooses to return a list of either names/objects
     # TODO Speed these up cause I bet they are slow
-    def get_objects(self, names=[], tags=[], groups=[], op='and', get='name'):
+    def get_objects(self, names=[], tags=[], groups=[], op='and', get='object'):
         
         objects = []
 
@@ -262,7 +282,8 @@ class Scene:
                             if self.groups[group][object].has_tags(tags):
                                 objects.append(object if return_names else self.groups[group][object])
                     else:
-                        objects.extend([*self.groups[group]] if return_names else self.groups[group])
+                        objects.extend([*self.groups[group]] if return_names else [*self.groups[group].values()])
+                        
 
             # If no groups are passed, dont get object by group, but we still need to check every group
             elif op == 'or': 
@@ -270,7 +291,7 @@ class Scene:
                 for group in self.groups:
                     # The groups is a selected group return all objects inside
                     if group in groups:
-                        objects.extend([*self.groups[group]] if return_names else self.groups[group])
+                        objects.extend([*self.groups[group]] if return_names else [*self.groups[group].values()])
                     else:
                         if use_tags:
                             for object in self.groups[group]:

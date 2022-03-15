@@ -5,8 +5,11 @@ import os
 
 import random
 
-#import our own custom classes
+#import our own game engine
 import gamegine as gg
+
+#import our own custom classes
+import entity as ent
 
 
 # Define some paramters for the game
@@ -21,38 +24,47 @@ def game(screen):
 
     print(f"\nStarting Game at Time: {scene1.last_time / 1000}s \n\n")
 
-    mover = scene1.add_object(gg.GameObject('mover', pos=[0, SCREEN_HEIGHT/2-50], tags=['fast']), 'objects')
-    mover.add_component('renderer', gg.renderer(mover, screen, size=[100, 100]))
-    mover.add_component('physics', gg.physics(mover, mass=5))
+    player1 = ent.Player('Player1', screen, pos=[0, SCREEN_HEIGHT-100-25])
+    scene1.add_object(player1, 'players')
+
+    
 
     # When the scene return false end the main game loop
     running = True
-    spawn_time = 250
+    spawn_time = 0.05
     spawn_timer = 0
     i = 0
     while running:
 
         # Make the changes we want to make
 
-        if mover.position[0] < SCREEN_WIDTH/2-50:
-            mover.physics.force([20, 0], 100)
+        if player1.position[0] < SCREEN_WIDTH/2-50:
+            player1.physics.set_force([5000, 0])
         else:
-            mover.physics.force([-20, 0], 100)
+            player1.physics.set_force([-5000, 0])
+
+        
             
 
         if scene1.time > spawn_timer:
-            print(mover.physics.velocity)
+            # print(player1.physics.velocity)
             spawn_timer = scene1.time + spawn_time
             i += 1
 
-            bullet = scene1.add_object(gg.GameObject('bullet'+str(i), pos=[mover.position[0]+50, SCREEN_HEIGHT/2-50]), 'bullets')
+            print(player1.physics.acceleration)
+
+            bullet = scene1.add_object(gg.GameObject('bullet'+str(i), pos=[player1.position[0]+50, player1.position[1]+50]), 'bullets')
             bullet.add_component('renderer', gg.renderer(bullet, screen, size=[10, 10]))
-            bullet.add_component('physics', gg.physics(bullet, mass=1))
-            bullet.physics.force([0, -25], 100)
+            bullet.add_component('physics', gg.physics(bullet, mass=1, gravity=True))
+            bullet.physics.add_force([0, -25])
             bullet.renderer.surf.fill((255, 0, 0))
 
         # Update the scene by passing events to it
         running = scene1.update(pg.event.get(), screen)
+
+        for bullet in scene1.get_objects(groups=['bullets']):
+            if (scene1.time - bullet._creation_time) > 12:
+                scene1.rm_objects([bullet])
 
         
         # Push updates to display
