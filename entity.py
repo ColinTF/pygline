@@ -25,3 +25,6 @@ class Player(gg.GameObject):
         super().__init__(name, pos=pos, tags=tags)
         self.add_component('renderer', gg.renderer(self, screen, size=[100, 100]))
         self.add_component('physics', gg.physics(self, mass=5))
+
+    def input(self, event):
+        print(event.pressed)

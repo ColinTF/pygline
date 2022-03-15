@@ -17,6 +17,9 @@ from pygame.locals import (
     QUIT,
 )
 
+# Create and event for a key held down
+KEYHELD = pg.USEREVENT + 1
+
 GRAVITY = 9.81
 
 # Components are attached to objects to make them unqiue and interact
@@ -203,6 +206,9 @@ class Scene:
         self.last_time = self.time
         self.delta_time = (self.time - self.last_time)
 
+        # Event handles are a dict with the events for keys and the function for values
+        self.event_handles = {}
+
         # Running is a boolean the update function will return to tell if the scene is still good
         self.running = True
 
@@ -220,6 +226,10 @@ class Scene:
         # This chunk will handle all our events
         for event in events:
 
+            # Call every function assigned to the event and pass the event
+            for function in self.event_handles.get(event.type, []):
+                function(event)
+
             if event.type == KEYDOWN:
                 
                 if event.key == K_ESCAPE:
@@ -228,11 +238,24 @@ class Scene:
             elif event.type == QUIT:
                 self.running = False
 
+        # Create a keys listener that posts and event of the pressed keys
+        keys = pg.key.get_pressed()
+        if any(keys):
+            pg.event.post(pg.event.Event(KEYHELD, pressed=keys))
+
         for object in self.get_objects(tags=['updates']):
             object.update(self.delta_time)
             
 
         return self.running
+
+    # Add event handlers
+    # Call this and pass an event to listen for and the function it will call
+    def add_event_handler(self, event_type, function):
+        if event_type in self.event_handles:   
+            self.event_handles[event_type].append(function)
+        else:
+            self.event_handles[event_type] = [function]
 
     # This next section if for object managment
 

@@ -26,6 +26,7 @@ def game(screen):
 
     player1 = ent.Player('Player1', screen, pos=[0, SCREEN_HEIGHT-100-25])
     scene1.add_object(player1, 'players')
+    scene1.add_event_handler(gg.KEYHELD, player1.input)
 
     
 
@@ -51,7 +52,7 @@ def game(screen):
             spawn_timer = scene1.time + spawn_time
             i += 1
 
-            print(player1.physics.acceleration)
+            # print(player1.physics.acceleration)
 
             bullet = scene1.add_object(gg.GameObject('bullet'+str(i), pos=[player1.position[0]+50, player1.position[1]+50]), 'bullets')
             bullet.add_component('renderer', gg.renderer(bullet, screen, size=[10, 10]))
