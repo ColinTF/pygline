@@ -27,4 +27,11 @@ class Player(gg.GameObject):
         self.add_component('physics', gg.physics(self, mass=5))
 
     def input(self, event):
-        print(event.pressed)
+        if event.keys[K_w]:
+            self.physics.add_force([0, -50])
+        if event.keys[K_d]:
+            self.physics.add_force([50, 0])
+        if event.keys[K_a]:
+            self.physics.add_force([-50, 0])
+        if event.keys[K_s]:
+            self.physics.add_force([0, 50])

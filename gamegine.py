@@ -241,7 +241,7 @@ class Scene:
         # Create a keys listener that posts and event of the pressed keys
         keys = pg.key.get_pressed()
         if any(keys):
-            pg.event.post(pg.event.Event(KEYHELD, pressed=keys))
+            pg.event.post(pg.event.Event(KEYHELD, keys=keys))
 
         for object in self.get_objects(tags=['updates']):
             object.update(self.delta_time)

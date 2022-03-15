@@ -32,17 +32,17 @@ def game(screen):
 
     # When the scene return false end the main game loop
     running = True
-    spawn_time = 0.05
+    spawn_time = 1
     spawn_timer = 0
     i = 0
     while running:
 
         # Make the changes we want to make
 
-        if player1.position[0] < SCREEN_WIDTH/2-50:
-            player1.physics.set_force([5000, 0])
-        else:
-            player1.physics.set_force([-5000, 0])
+        # if player1.position[0] < SCREEN_WIDTH/2-50:
+        #     player1.physics.set_force([5000, 0])
+        # else:
+        #     player1.physics.set_force([-5000, 0])
 
         
             
