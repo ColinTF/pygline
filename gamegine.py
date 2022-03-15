@@ -60,7 +60,7 @@ class renderer(component):
 # Allow the object to interact with the world
 class physics(component):
 
-    def __init__(self, owner, mass=1, friction=0.9, collision=True, gravity=False, passive=False):
+    def __init__(self, owner, mass=1, friction=0.1, collision=True, gravity=False, passive=False):
         super(physics, self).__init__(owner)
 
         self.mass = mass
@@ -83,7 +83,7 @@ class physics(component):
     def update(self, delta_time):
         super(physics, self).update(delta_time)
 
-        self.forces *= self.friction
+        self.forces *= (1 - self.friction)
 
         self.acceleration = self.forces / self.mass
         self.velocity += self.acceleration * delta_time

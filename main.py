@@ -57,7 +57,7 @@ def game(screen):
             bullet = scene1.add_object(gg.GameObject('bullet'+str(i), pos=[player1.position[0]+50, player1.position[1]+50]), 'bullets')
             bullet.add_component('renderer', gg.renderer(bullet, screen, size=[10, 10]))
             bullet.add_component('physics', gg.physics(bullet, mass=1, friction=0.05, gravity=True))
-            bullet.physics.add_force([0, -25])
+            bullet.physics.add_force([0, -5000])
             bullet.renderer.surf.fill((255, 0, 0))
 
         # Update the scene by passing events to it
