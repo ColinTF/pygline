@@ -78,7 +78,7 @@ def game(screen):
 # Our main function
 def main():
 
-    # Clear terminal test
+    # Clear terminal
     # os.system('cls' if os.name == 'nt' else 'clear')
 
     # Initilize the game and create the window we will display to
