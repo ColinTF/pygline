@@ -60,7 +60,7 @@ class renderer(component):
 # Allow the object to interact with the world
 class physics(component):
 
-    def __init__(self, owner, mass=1, collision=True, gravity=False, passive=False):
+    def __init__(self, owner, mass=1, friction=0.9, collision=True, gravity=False, passive=False):
         super(physics, self).__init__(owner)
 
         self.mass = mass
@@ -73,6 +73,8 @@ class physics(component):
         if passive:
             self.owner.add_tag('passive')
 
+        self.friction = friction
+
         self.forces = np.array([0, self.mass * GRAVITY]) if self.owner.has_tags(['gravity']) else np.zeros(2)
         self.acceleration = np.zeros(2)
         self.velocity = np.zeros(2)
@@ -80,6 +82,8 @@ class physics(component):
     # Update the postion using math and delta time
     def update(self, delta_time):
         super(physics, self).update(delta_time)
+
+        self.forces *= self.friction
 
         self.acceleration = self.forces / self.mass
         self.velocity += self.acceleration * delta_time

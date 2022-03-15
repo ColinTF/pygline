@@ -26,12 +26,14 @@ class Player(gg.GameObject):
         self.add_component('renderer', gg.renderer(self, screen, size=[100, 100]))
         self.add_component('physics', gg.physics(self, mass=5))
 
+        self.speed = 200
+
     def input(self, event):
         if event.keys[K_w]:
-            self.physics.add_force([0, -50])
+            self.physics.add_force([0, -self.speed])
         if event.keys[K_d]:
-            self.physics.add_force([50, 0])
+            self.physics.add_force([self.speed, 0])
         if event.keys[K_a]:
-            self.physics.add_force([-50, 0])
+            self.physics.add_force([-self.speed, 0])
         if event.keys[K_s]:
-            self.physics.add_force([0, 50])
+            self.physics.add_force([0, self.speed])
