@@ -41,12 +41,14 @@ class renderer(component):
     def __init__(self, owner, output, size=[50, 50], rel_location=np.zeros(2), color=(255,255,255)):
         super().__init__(owner)
 
-        self.surf = pg.Surface(size)
+        self.surf = pg.Surface(size, pg.SRCALPHA)
         self.surf.fill(color)
 
         self.rel_location = rel_location
 
         self.rect = self.surf.get_rect()
+
+        self.rotation = 0
 
         self.output = output
 
@@ -54,7 +56,12 @@ class renderer(component):
     def update(self, delta_time):
         super().update(delta_time)
 
-        self.rect.topleft = self.owner.position + self.rel_location
+        if self.rotation != self.owner.rotation:
+            self.surf = pg.transform.rotate(self.surf, self.owner.rotation-self.rotation)
+            self.rect = self.surf.get_rect()
+            self.rotation = self.owner.rotation
+
+        self.rect.center = self.owner.position + self.rel_location
         self.output.blit(self.surf, self.rect)
 
 # Allow the object to interact with the world
@@ -103,6 +110,11 @@ class physics(component):
         else:
             self.forces += np.array(force)
 
+    # Rotate the object
+    def rotate(self, degrees):
+
+        self.owner.rotation += degrees
+
     
         
         
@@ -126,6 +138,7 @@ class GameObject:
         self.update_responsibilities = []
 
         self.position = pos
+        self.rotation = 0
 
     # Update all components
     def update(self, delta_time):

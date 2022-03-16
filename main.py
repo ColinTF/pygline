@@ -22,13 +22,22 @@ def game(screen):
     # Create the main scene game
     scene1 = gg.Scene()
 
-    print(f"\nStarting Game at Time: {scene1.last_time / 1000}s \n\n")
+    print(f"\nStarting Game at Time: {scene1.time}s \n\n")
 
-    player1 = ent.Player('Player1', screen, pos=[0, SCREEN_HEIGHT-100-25])
+    player1 = ent.Player('Player1', screen, pos=[0, SCREEN_HEIGHT])
     scene1.add_object(player1, 'players')
     scene1.add_event_handler(gg.KEYHELD, player1.input)
+    player1.renderer.surf.fill((0,0,255))
 
-    
+    player2 = ent.Player2('Player2', screen, pos=[0, 0])
+    scene1.add_object(player2, 'players')
+    scene1.add_event_handler(gg.KEYHELD, player2.input)
+
+    player1.physics.rotate(12)
+
+    player1.physics.rotate(12)
+
+    player1.physics.rotate(-12)
 
     # When the scene return false end the main game loop
     running = True
@@ -43,29 +52,27 @@ def game(screen):
         #     player1.physics.set_force([5000, 0])
         # else:
         #     player1.physics.set_force([-5000, 0])
-
-        
             
 
-        if scene1.time > spawn_timer:
-            # print(player1.physics.velocity)
-            spawn_timer = scene1.time + spawn_time
-            i += 1
+        # if scene1.time > spawn_timer:
+        #     # print(player1.physics.velocity)
+        #     spawn_timer = scene1.time + spawn_time
+        #     i += 1
 
-            # print(player1.physics.acceleration)
+        #     # print(player1.physics.acceleration)
 
-            bullet = scene1.add_object(gg.GameObject('bullet'+str(i), pos=[player1.position[0]+50, player1.position[1]+50]), 'bullets')
-            bullet.add_component('renderer', gg.renderer(bullet, screen, size=[10, 10]))
-            bullet.add_component('physics', gg.physics(bullet, mass=1, friction=0.05, gravity=True))
-            bullet.physics.add_force([0, -5000])
-            bullet.renderer.surf.fill((255, 0, 0))
+        #     bullet = scene1.add_object(gg.GameObject('bullet'+str(i), pos=[player1.position[0]+50, player1.position[1]+50]), 'bullets')
+        #     bullet.add_component('renderer', gg.renderer(bullet, screen, size=[10, 10]))
+        #     bullet.add_component('physics', gg.physics(bullet, mass=1, friction=0.05, gravity=True))
+        #     bullet.physics.add_force([0, -5000])
+        #     bullet.renderer.surf.fill((255, 0, 0))
 
-        # Update the scene by passing events to it
+        # # Update the scene by passing events to it
         running = scene1.update(pg.event.get(), screen)
 
-        for bullet in scene1.get_objects(groups=['bullets']):
-            if (scene1.time - bullet._creation_time) > 12:
-                scene1.rm_objects([bullet])
+        # for bullet in scene1.get_objects(groups=['bullets']):
+        #     if (scene1.time - bullet._creation_time) > 12:
+        #         scene1.rm_objects([bullet])
 
         
         # Push updates to display
@@ -74,7 +81,7 @@ def game(screen):
     print(scene1)
 
     # after our game loop ends we must quit pygame
-    print(f"\n\nEnding Game at Time: {scene1.last_time / 1000}s \n")
+    print(f"\n\nEnding Game at Time: {scene1.time}s \n")
 
 # Our main function
 def main():

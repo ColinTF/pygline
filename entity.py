@@ -37,3 +37,22 @@ class Player(gg.GameObject):
             self.physics.add_force([-self.speed, 0])
         if event.keys[K_s]:
             self.physics.add_force([0, self.speed])
+
+class Player2(gg.GameObject):
+    
+    def __init__(self, name, screen, pos=np.zeros(2), tags=[]):
+        super().__init__(name, pos=pos, tags=tags)
+        self.add_component('renderer', gg.renderer(self, screen, size=[100, 100]))
+        self.add_component('physics', gg.physics(self, mass=5))
+
+        self.speed = 200
+
+    def input(self, event):
+        if event.keys[K_UP]:
+            self.physics.add_force([0, -self.speed])
+        if event.keys[K_RIGHT]:
+            self.physics.add_force([self.speed, 0])
+        if event.keys[K_LEFT]:
+            self.physics.add_force([-self.speed, 0])
+        if event.keys[K_DOWN]:
+            self.physics.add_force([0, self.speed])
