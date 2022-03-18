@@ -2,7 +2,7 @@
 ### Do not add game engine features here
 
 import numpy as np
-import src as gg
+import gamegine as gg
 
 
 class Player(gg.GameObject):
