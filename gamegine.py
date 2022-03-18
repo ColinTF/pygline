@@ -25,6 +25,7 @@ import os
 
 
 NP_FLOAT32_SIZE = 4
+GRAVITY = 9.81
 
 
 class Shader:
@@ -233,28 +234,17 @@ class renderer(component):
     def __init__(self, owner, output, size=[50, 50], rel_location=np.zeros(2), color=(255,255,255)):
         super().__init__(owner)
 
-        self.surf = pg.Surface(size, pg.SRCALPHA)
-        self.surf.fill(color)
-
         self.rel_location = rel_location
 
-        self.rect = self.surf.get_rect()
-
         self.rotation = 0
-
-        self.output = output
 
     # Draws the surface to the screen at its position
     def update(self, delta_time):
         super().update(delta_time)
 
         if self.rotation != self.owner.rotation:
-            self.surf = pg.transform.rotate(self.surf, self.owner.rotation-self.rotation)
-            self.rect = self.surf.get_rect()
             self.rotation = self.owner.rotation
 
-        self.rect.center = self.owner.position + self.rel_location
-        self.output.blit(self.surf, self.rect)
 
 # Allow the object to interact with the world
 class physics(component):
@@ -307,7 +297,8 @@ class physics(component):
 
         self.owner.rotation += degrees
       
-
+class mesh(component):
+    pass
 
 class GameObject:
     """
@@ -329,9 +320,17 @@ class GameObject:
 
     # Init the object with the time it was made and its name
     # Names should be unique
-    def __init__(self, name, pos=np.zeros(2), tags=[]):
+    def __init__(self, name : str, pos : np.ndarray = np.zeros(2), tags : list[str] = []):
+        """
+        Create a blank game object
+
+        Args:
+            - name: unique string to identify the object
+            - pos: starting position as a 2d numpy array
+            - tags: list of strings to catagorize the object with
+        """
         self._name = name
-        self._creation_time = pg.time.get_ticks() / 1000.0
+        # self._creation_time = pg.time.get_ticks() / 1000.0
         self.tags = []
         self.tags.extend(self.default_tags)
 
@@ -347,12 +346,12 @@ class GameObject:
             resposibilty(delta_time)
 
     # Add components as atrributes and add their update functions to the responsibilties list
-    def add_component(self, name, component):
+    def add_component(self, name : str, component: component):
         setattr(self, name, component)
         self.components.append(name)
         self.update_responsibilities.append(component.update)
 
-    def rm_component(self, name, component):
+    def rm_component(self, name : str, component: component):
         self.components.remove(name)
         self.component.kill()
         self.update_responsibilities.remove(component.update)
@@ -364,23 +363,23 @@ class GameObject:
     # say we want to loop through all our objects and
     # only do something to certain ones
     # might be a good idead to store lists of all objects with a certain tag
-    def add_tag(self, tag):
+    def add_tag(self, tag: str):
         self.tags.append(tag)
 
     # Check if a set of tags or tag is assigned
-    def has_tags(self, tags):
+    def has_tags(self, tags: list[str]) -> bool:
         if isinstance(tags, list):
             return all(x in self.tags for x in tags)
         else: 
             return tags in self.tags
 
-    def rm_tag(self, tag):
+    def rm_tag(self, tag: str):
         self.tags.remove(tag)
 
-    def get_tags(self):
+    def get_tags(self) -> list[str]:
         return self.tags
 
-    def kill(self, announce=False):
+    def kill(self, announce : bool = False):
         if announce:
             print(f"'{self._name}' has been killed and removed")
         for comp in self.components:
@@ -426,9 +425,9 @@ class Scene:
         self.groups = {'default': {}}
 
         # Init Time and Delta time, althought delta time starts as 0
-        self.time = pg.time.get_ticks() / 1000.0
-        self.last_time = self.time
-        self.delta_time = (self.time - self.last_time)
+        # self.time = pg.time.get_ticks() / 1000.0
+        # self.last_time = self.time
+        # self.delta_time = (self.time - self.last_time)
 
         # Event handles are a dict with the events for keys and the function for values
         self.event_handles = {}
@@ -437,35 +436,20 @@ class Scene:
         self.running = True
 
     # Update the whole scene with delta time
-    def update(self, events, screen):
-
-        # Clear the screen
-        screen.fill((0, 0, 0))
+    def update(self):
 
         #Update time and delta time
-        self.time = pg.time.get_ticks() / 1000.0
+        # self.time = pg.time.get_ticks() / 1000.0
         self.delta_time = (self.time - self.last_time)
         self.last_time = self.time
 
         # This chunk will handle all our events
-        for event in events:
+        # for event in events:
 
-            # Call every function assigned to the event and pass the event
-            for function in self.event_handles.get(event.type, []):
-                function(event)
+        #     # Call every function assigned to the event and pass the event
+        #     for function in self.event_handles.get(event.type, []):
+        #         function(event)
 
-            if event.type == KEYDOWN:
-                
-                if event.key == K_ESCAPE:
-                    self.running = False
-                
-            elif event.type == QUIT:
-                self.running = False
-
-        # Create a keys listener that posts and event of the pressed keys
-        keys = pg.key.get_pressed()
-        if any(keys):
-            pg.event.post(pg.event.Event(KEYHELD, keys=keys))
 
         for object in self.get_objects(tags=['updates']):
             object.update(self.delta_time)
