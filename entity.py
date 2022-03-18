@@ -9,7 +9,7 @@ class Player(gg.GameObject):
     
     def __init__(self, name, screen, pos=np.zeros(2), tags=[]):
         super().__init__(name, pos=pos, tags=tags)
-        self.add_component('renderer', gg.renderer(self, screen, size=[100, 100]))
+        self.add_component('renderer', gg.mesh(self, screen, size=[100, 100]))
         self.add_component('physics', gg.physics(self, mass=5))
 
         self.speed = 200
@@ -28,7 +28,7 @@ class Player2(gg.GameObject):
     
     def __init__(self, name, screen, pos=np.zeros(2), tags=[]):
         super().__init__(name, pos=pos, tags=tags)
-        self.add_component('renderer', gg.renderer(self, screen, size=[100, 100]))
+        self.add_component('renderer', gg.mesh(self, screen, size=[100, 100]))
         self.add_component('physics', gg.physics(self, mass=5))
 
         self.speed = 200
