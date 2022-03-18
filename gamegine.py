@@ -18,10 +18,111 @@ import numpy as np
 # Rendering imports
 import glfw
 from OpenGL.GL import *
+import OpenGL.GL.shaders
 
 # system imports
 import os
 
+
+NP_FLOAT32_SIZE = 4
+
+
+class Shader:
+    """
+    Stores shader data and the compiled shader
+
+    A shader tells the game engine how to handle vertices and colors when displaying them
+    """
+
+    def __init__(self, vert_src: str, frag_src: str):
+        """
+        Create a shader from the passed shader files
+
+        This handles the conversion from the file to the actual shader
+
+        Loads the shader data from the set file paths
+
+        To compile the shader from the data use compile()
+        
+        Args:
+            - vert_src: path to the vertex shader as a string
+            - frag_src: path to the fragment shader as a string
+        """
+
+        vert_src = open(vert_src, 'r')
+        self._vert_data = vert_src.read()
+        vert_src.close()
+
+        frag_src = open(frag_src, 'r')
+        self._frag_data = frag_src.read()
+        frag_src.close()
+
+    def compile(self):
+        """Compile the shader for use"""
+
+        self._vert = OpenGL.GL.shaders.compileShader(self._vert_data, GL_VERTEX_SHADER)
+        self._frag = OpenGL.GL.shaders.compileShader(self._frag_data, GL_FRAGMENT_SHADER)
+
+        self._shader = OpenGL.GL.shaders.compileProgram(self._vert, self._frag)
+
+
+class RenderPipeline:
+    """
+    A system for rendering managed by the Game class
+
+    Most users should not need to touch this
+    """
+
+    def __init__(self, shader: Shader):
+        """
+        Init the render pipline
+        """
+
+        # Set the bg color #TODO make this changeable
+        glClearColor(0.07, 0.13, 0.17, 1.0)
+
+        # Some default settings we want to set
+        glEnable(GL_DEPTH_TEST)
+
+        # Create our buffers
+        self.VBO = glGenBuffers(1)
+        glBindBuffer(GL_ARRAY_BUFFER, self.VBO)
+
+        self.EBO = glGenBuffers(1)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.EBO)
+
+        # Tell opengl how to read from our buffers
+        glEnableVertexAttribArray(0)
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, NP_FLOAT32_SIZE*6, ctypes.c_void_p(0))
+
+        glEnableVertexAttribArray(1)
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, NP_FLOAT32_SIZE*6, ctypes.c_void_p(NP_FLOAT32_SIZE*3))
+
+        # Set the shader
+        self.set_shader(shader)
+
+    def set_shader(self, shader: Shader):
+        """Tell the pipeline which shader to use"""
+        glUseProgram(shader._shader)
+
+    def render(self, vertices: np.ndarray, indices: np.ndarray):
+        """
+        Render the the shapes to the screen
+
+        Args:
+            - vertices: list of vertices and their data as a numpy array
+            - indices: list of indices associated with the vertices as a numpy array
+        """
+
+        # Pass the paramaters into the appropriate buffers
+        glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL_STATIC_DRAW)
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.nbytes, indices, GL_STATIC_DRAW)
+
+        # Clear right before we display to minimize flicker I would suspect
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+        # Finally draw to the screen with the correct method #TODO add new mthods
+        glDrawElements(GL_TRIANGLES, len(indices), GL_UNSIGNED_INT, None)
 
 # Lets write our class to handle opengl with glfw
 
@@ -41,8 +142,8 @@ class Game:
         Initialize the game engine
         
         Args:
-            name: The name of the window as a string
-            size: The width and height of the window as a tuple
+            - name: name of the window as a string
+            - size: width and height of the window as a tuple
 
         """
 
@@ -52,8 +153,6 @@ class Game:
         self._size = size 
         self._width = size[0]
         self._height = size[1]
-
-        # Define all other variables
 
         # Init glfw and create a window and make sure both tasks complete succesfully
         if not glfw.init():
@@ -78,6 +177,15 @@ class Game:
                 glfw.make_context_current(self.window)
                 glViewport(0, 0, self._width, self._height)
 
+                # Define all other variables
+
+                # Create the objects we need
+                self.shader = Shader("shaders/vertex.vert", "shaders/fragment.frag")
+                self.shader.compile()
+
+                self.render = RenderPipeline(self.shader)
+                
+
     def loop(self):
         """
         Starts the game loop
@@ -87,6 +195,8 @@ class Game:
 
         while not glfw.window_should_close(self.window):
             glfw.poll_events()
+            
+            
 
             glfw.swap_buffers(self.window)
 
@@ -97,8 +207,15 @@ class Game:
         glfw.destroy_window(self.window)
         glfw.terminate()
 
-# Components are attached to objects to make them unqiue and interact
 class component:
+    """
+    Components are attached to objects to make them unqiue and interact
+
+    Components can be defined by the user but built-ins include:
+        - Physics
+        - Renderer
+        - #TODO add more components
+    """
 
     def __init__(self, owner):
         self.owner = owner
@@ -110,7 +227,7 @@ class component:
         pass
 
 # Allow the object to be re
-# ndered to the screen
+# rendered to the screen
 class renderer(component):
 
     def __init__(self, owner, output, size=[50, 50], rel_location=np.zeros(2), color=(255,255,255)):
@@ -191,9 +308,21 @@ class physics(component):
         self.owner.rotation += degrees
       
 
-# This class will be the parent object to everything that can be seen or does something in the game
-# You can attach functionality to the object to make it do intresting stuff like a renderer
+
 class GameObject:
+    """
+    Master class for all objects
+
+    All things that move/interact/rendered should be a gameobject. For example, the player, a tree, or even a force field!
+
+    Here is what GameObjects can do:
+        - have one parent and may have multiple children
+        - be organized with tags
+        - own components
+
+    Warnings:
+        - every name MUST be unique. There is built-in methods to do this
+    """
 
     # The default tags to use
     default_tags = ['updates']
@@ -277,9 +406,15 @@ class GameObject:
         return NotImplemented
 
 
-
-# This class will manage all our objects and updates, will update our scene
 class Scene:
+    """
+    Scenes contain objects that interact with eachother
+
+    Load a scene in with the game manager to use it
+
+    Scenes are populated with objects and the objects are sorted using a heiracy of dictionaries
+    
+    """
 
 
     # Initlize the Scene
@@ -362,7 +497,7 @@ class Scene:
     # op can be 'and'/'or' it determines if the object must meet 1 or all criteria
     # Depedning on the # of objects/groups in a scene, the critera and operator these could take a while to run
     # get is chooses to return a list of either names/objects
-    # TODO Speed these up cause I bet they are slow
+    # TODO Make better search function
     def get_objects(self, names=[], tags=[], groups=[], op='and', get='object'):
         
         objects = []
