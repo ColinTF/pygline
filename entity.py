@@ -1,23 +1,9 @@
 ### This file will manage all the user built classes outside of the core game engine
 ### Do not add game engine features here
 
-import pygame as pg
 import numpy as np
 import gamegine as gg
 
-from pygame.locals import (
-    K_UP,
-    K_DOWN,
-    K_LEFT,
-    K_RIGHT,
-    K_w,
-    K_a,
-    K_s,
-    K_d,
-    K_ESCAPE,
-    KEYDOWN,
-    QUIT,
-)
 
 class Player(gg.GameObject):
     

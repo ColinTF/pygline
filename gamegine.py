@@ -1,26 +1,101 @@
-#The imports we need
-import pygame as pg
+"""
+Welcome to gamegine:
+
+Gamegine is the current working and tempory name for a project by Colin Finnie.
+It purpose is to create a system for rapidly prototyping games or just creating simple games.
+
+My current plan is to use the game engine to develop learning enviornments for AI like the open-ai gym.
+
+For now this project mostly functions as a way to learn opengl and improve my python skills.
+
+Thanks for checking it out!
+"""
+
+# The imports we need
+from typing import Callable
 import numpy as np
 
-# Import some constants we will refer too
-from pygame.locals import (
-    K_UP,
-    K_DOWN,
-    K_LEFT,
-    K_RIGHT,
-    K_w,
-    K_a,
-    K_s,
-    K_d,
-    K_ESCAPE,
-    KEYDOWN,
-    QUIT,
-)
+# Rendering imports
+import glfw
+from OpenGL.GL import *
 
-# Create and event for a key held down
-KEYHELD = pg.USEREVENT + 1
+# system imports
+import os
 
-GRAVITY = 9.81
+
+# Lets write our class to handle opengl with glfw
+
+class Game:
+    """
+    This class manages the whole game for us. 
+    
+    We can use it to: 
+        - init glfw and create our window
+        - open files to use (textures, shaders)
+        - save and load scenes
+    """
+
+    def __init__(self, name: str, size: tuple[int, int]):
+
+        """
+        Initialize the game engine
+        
+        Args:
+            name: The name of the window as a string
+            size: The width and height of the window as a tuple
+
+        """
+
+        # Define variables set when created
+        
+        self._name = name
+        self._size = size 
+        self._width = size[0]
+        self._height = size[1]
+
+        # Define all other variables
+
+        # Init glfw and create a window and make sure both tasks complete succesfully
+        if not glfw.init():
+            raise Exception("Cant initilize Window")
+        else:
+
+            glfw.window_hint(glfw.RESIZABLE, glfw.FALSE) # Make the window not resizable
+            self.window = glfw.create_window(self._width, self._height, self._name, None, None)
+
+            if not self.window:
+                glfw.terminate()
+                raise Exception("Could not create glfw window")
+            else:
+
+                # Sucsess! Print saying we made a window at the time
+                self._game_start_time = glfw.get_time()
+                print(f"Created game of size: {self._size} at time: {self._game_start_time}s")
+
+                # Do the rest now
+
+                glfw.set_window_pos(self.window, 20, 40)
+                glfw.make_context_current(self.window)
+                glViewport(0, 0, self._width, self._height)
+
+    def loop(self):
+        """
+        Starts the game loop
+
+        The game loop will only end when the "window_should_close()" as defined by glfw or another exit condition is met
+        """
+
+        while not glfw.window_should_close(self.window):
+            glfw.poll_events()
+
+            glfw.swap_buffers(self.window)
+
+    def end(self):
+        """Kills the game window and ends glfw"""
+        # Print to console that the game ended
+        print(f"Ended game at time: {self._game_start_time}s")
+        glfw.destroy_window(self.window)
+        glfw.terminate()
 
 # Components are attached to objects to make them unqiue and interact
 class component:
@@ -114,10 +189,7 @@ class physics(component):
     def rotate(self, degrees):
 
         self.owner.rotation += degrees
-
-    
-        
-        
+      
 
 # This class will be the parent object to everything that can be seen or does something in the game
 # You can attach functionality to the object to make it do intresting stuff like a renderer
@@ -431,3 +503,5 @@ class Scene:
                 string += f"    |>-{self.groups[group][object]}\tTags: {self.groups[group][object].get_tags()}\n"
             string += f"    |\n"
         return string
+
+
