@@ -7,7 +7,7 @@ class component:
 
     Components can be defined by the user but built-ins include:
         - Physics
-        - Renderer
+        - Mesh
         - #TODO add more components
     """
 

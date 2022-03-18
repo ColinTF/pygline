@@ -19,7 +19,7 @@ def main():
 
     game = gg.Game("Gamegine", (WIDTH, HEIGHT))
 
-    game.loop()
+    game.start_game_loop()
 
     game.end()
 

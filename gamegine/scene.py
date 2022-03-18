@@ -33,46 +33,16 @@ class Scene:
         # access it through functions
         self.groups = {'default': {}}
 
-        # Init Time and Delta time, althought delta time starts as 0
-        # self.time = pg.time.get_ticks() / 1000.0
-        # self.last_time = self.time
-        # self.delta_time = (self.time - self.last_time)
-
-        # Event handles are a dict with the events for keys and the function for values
-        self.event_handles = {}
-
-        # Running is a boolean the update function will return to tell if the scene is still good
-        self.running = True
+        self.vertices = np.array([])
+        self.indices = np.array([])
+    
 
     # Update the whole scene with delta time
-    def update(self):
-
-        #Update time and delta time
-        # self.time = pg.time.get_ticks() / 1000.0
-        self.delta_time = (self.time - self.last_time)
-        self.last_time = self.time
-
-        # This chunk will handle all our events
-        # for event in events:
-
-        #     # Call every function assigned to the event and pass the event
-        #     for function in self.event_handles.get(event.type, []):
-        #         function(event)
-
+    def update(self, delta_time):
 
         for object in self.get_objects(tags=['updates']):
-            object.update(self.delta_time)
+            object.update(delta_time)
             
-
-        return self.running
-
-    # Add event handlers
-    # Call this and pass an event to listen for and the function it will call
-    def add_event_handler(self, event_type, function):
-        if event_type in self.event_handles:   
-            self.event_handles[event_type].append(function)
-        else:
-            self.event_handles[event_type] = [function]
 
     # This next section if for object managment
 
@@ -145,16 +115,6 @@ class Scene:
     # Remove an object from a specifc group
     # If we cant remove the object raise and error and print to the console
     def rm_objects(self, objects, announce=False):
-        # success = False
-        # del self.get_objects(names=[str(x) for x in objects])
-        # print(objects)
-        # # for object in objects:
-        # #     objects[object].kill(announce)
-        # #     success = True
-
-        # # if not success:
-        # #     print(f"Failed to delete '{objects}'")
-        # # return success
 
         objects = [str(x) for x in objects]
         success = False

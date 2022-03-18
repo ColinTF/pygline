@@ -73,6 +73,11 @@ class Game:
 
                 # Define all other variables
 
+                # Create our variables for time managment
+                self.time = glfw.get_time()
+                self.last_time = self.time
+                self.delta_time = self.time - self.last_time
+
                 # Create the objects we need
                 self.shader = Shader("shaders/vertex.vert", "shaders/fragment.frag")
                 self.shader.compile()
@@ -80,7 +85,7 @@ class Game:
                 self.render = RenderPipeline(self.shader)
                 
 
-    def loop(self):
+    def start_game_loop(self):
         """
         Starts the game loop
 
@@ -88,6 +93,12 @@ class Game:
         """
 
         while not glfw.window_should_close(self.window):
+
+            # Update variables for time managment
+            self.time = glfw.get_time()
+            self.delta_time = self.time - self.last_time
+            self.last_time = self.time
+
             glfw.poll_events()
             
             
