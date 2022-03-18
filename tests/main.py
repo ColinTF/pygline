@@ -4,7 +4,7 @@ import numpy as np
 import random
 
 #import our own game engine
-import gamegine as gg
+from ..src.gamegine import Game
 
 #import our own custom classes
 import entity as ent
@@ -17,7 +17,7 @@ HEIGHT = 800
 # This will be where our game takes place
 def main():
 
-    game = gg.Game("Gamegine", (WIDTH, HEIGHT))
+    game = Game("Gamegine", (WIDTH, HEIGHT))
 
     game.start_game_loop()
 
