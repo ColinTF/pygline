@@ -10,7 +10,7 @@ class Shader:
     A shader tells the game engine how to handle vertices and colors when displaying them
     """
 
-    def __init__(self, vert_src: str, frag_src: str):
+    def __init__(self, shader_src: str, vert_src: str, frag_src: str):
         """
         Create a shader from the passed shader files
 
@@ -21,15 +21,16 @@ class Shader:
         To compile the shader from the data use compile()
         
         Args:
-            - vert_src: path to the vertex shader as a string
-            - frag_src: path to the fragment shader as a string
+            - shader_src: path to shader folder
+            - vert_src: name of the vertex shader as a string
+            - frag_src: name to the fragment shader as a string
         """
 
-        vert_src = open(vert_src, 'r')
+        vert_src = open(os.path.join(shader_src, vert_src), 'r')
         self._vert_data = vert_src.read()
         vert_src.close()
 
-        frag_src = open(frag_src, 'r')
+        frag_src = open(os.path.join(shader_src, frag_src), 'r')
         self._frag_data = frag_src.read()
         frag_src.close()
 

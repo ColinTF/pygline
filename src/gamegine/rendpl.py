@@ -1,5 +1,5 @@
 from OpenGL.GL import *
-from gamegine.shader import Shader
+from gamegine import components, shader
 
 NP_FLOAT32_SIZE = 4
 
@@ -12,7 +12,7 @@ class RenderPipeline:
     Most users should not need to touch this
     """
 
-    def __init__(self, shader: Shader):
+    def __init__(self, shader: shader.Shader):
         """
         Init the render pipline
         """
@@ -40,7 +40,7 @@ class RenderPipeline:
         # Set the shader
         self.set_shader(shader)
 
-    def set_shader(self, shader: Shader):
+    def set_shader(self, shader: shader.Shader):
         """Tell the pipeline which shader to use"""
         glUseProgram(shader._shader)
 

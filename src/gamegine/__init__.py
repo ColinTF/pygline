@@ -11,11 +11,11 @@ For now this project mostly functions as a way to learn opengl and improve my py
 Thanks for checking it out!
 """
 
-from .engine import Game
-from .gameobject import GameObject
-from .shader import Shader
-from .scene import Scene
-from .rendpl import RenderPipeline
-from .components import component, mesh, physics
+# from engine import Game
+# from gameobject import GameObject
+# from shader import Shader
+# from scene import Scene
+# from rendpl import RenderPipeline
+# from components import component, mesh, physics
 
-__all__ = ["engine", "components", "shader", "gameobject", "rendpl", "scene"] 
+# __all__ = ["engine", "components", "shader", "gameobject", "rendpl", "scene"] 

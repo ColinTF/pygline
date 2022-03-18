@@ -13,11 +13,9 @@ Thanks for checking it out!
 
 import glfw
 from OpenGL.GL import *
-from .rendpl import RenderPipeline
-from .shader import Shader
+from gamegine import rendpl, shader, locals
 
-NP_FLOAT32_SIZE = 4
-GRAVITY = 9.81
+import os
 
 # Lets write our class to handle opengl with glfw
 class Game:
@@ -78,12 +76,23 @@ class Game:
                 self.last_time = self.time
                 self.delta_time = self.time - self.last_time
 
-                # Create the objects we need
-                self.shader = Shader("shaders/vertex.vert", "shaders/fragment.frag")
-                self.shader.compile()
+                # Set the resources paths and subpaths to here
+                self.resource_path = "\\"
+                self.shader_path = "shaders\\"
 
-                self.render = RenderPipeline(self.shader)
-                
+
+    def set_resource_dir(self, path : str):
+        """Set the path to look for game resources"""
+        self.resource_path = path
+
+    def load(self):
+        """Load the resources we need to function"""
+        # Create the objects we need
+        self.shader = shader.Shader(os.path.join(self.resource_path, self.shader_path), "vertex.vert", "fragment.frag")
+        self.shader.compile()
+
+        self.render = rendpl.RenderPipeline(self.shader)
+
 
     def start_game_loop(self):
         """

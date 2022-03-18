@@ -1,5 +1,5 @@
 import numpy as np
-from gamegine.locals import *
+from gamegine import locals
 
 class component:
     """

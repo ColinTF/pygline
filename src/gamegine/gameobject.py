@@ -1,4 +1,4 @@
-from .components import *
+from gamegine import components
 import numpy as np
 
 class GameObject:
@@ -47,12 +47,12 @@ class GameObject:
             resposibilty(delta_time)
 
     # Add components as atrributes and add their update functions to the responsibilties list
-    def add_component(self, name : str, component: component):
+    def add_component(self, name : str, component: components.component):
         setattr(self, name, component)
         self.components.append(name)
         self.update_responsibilities.append(component.update)
 
-    def rm_component(self, name : str, component: component):
+    def rm_component(self, name : str, component: components.component):
         self.components.remove(name)
         self.component.kill()
         self.update_responsibilities.remove(component.update)
