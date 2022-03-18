@@ -3,6 +3,11 @@ import numpy as np
 import pygame as pg
 import os
 
+from OpenGL.GL import *
+from OpenGL.GLUT import *
+from OpenGL.GLU import *
+
+
 import random
 
 #import our own game engine
@@ -15,6 +20,10 @@ import entity as ent
 # Define some paramters for the game
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 800
+
+# Shows the screen
+def showScreen():
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
 # This will be where our game takes place
 def game(screen):
@@ -45,40 +54,7 @@ def game(screen):
     spawn_timer = 0
     i = 0
     while running:
-
-        # Make the changes we want to make
-
-        # if player1.position[0] < SCREEN_WIDTH/2-50:
-        #     player1.physics.set_force([5000, 0])
-        # else:
-        #     player1.physics.set_force([-5000, 0])
-            
-
-        # if scene1.time > spawn_timer:
-        #     # print(player1.physics.velocity)
-        #     spawn_timer = scene1.time + spawn_time
-        #     i += 1
-
-        #     # print(player1.physics.acceleration)
-
-        #     bullet = scene1.add_object(gg.GameObject('bullet'+str(i), pos=[player1.position[0]+50, player1.position[1]+50]), 'bullets')
-        #     bullet.add_component('renderer', gg.renderer(bullet, screen, size=[10, 10]))
-        #     bullet.add_component('physics', gg.physics(bullet, mass=1, friction=0.05, gravity=True))
-        #     bullet.physics.add_force([0, -5000])
-        #     bullet.renderer.surf.fill((255, 0, 0))
-
-        # # Update the scene by passing events to it
-        running = scene1.update(pg.event.get(), screen)
-
-        # for bullet in scene1.get_objects(groups=['bullets']):
-        #     if (scene1.time - bullet._creation_time) > 12:
-        #         scene1.rm_objects([bullet])
-
-        
-        # Push updates to display
-        pg.display.flip()
-
-    print(scene1)
+        pass
 
     # after our game loop ends we must quit pygame
     print(f"\n\nEnding Game at Time: {scene1.time}s \n")
@@ -89,15 +65,16 @@ def main():
     # Clear terminal
     # os.system('cls' if os.name == 'nt' else 'clear')
 
-    # Initilize the game and create the window we will display to
-    pg.init()
-    screen = pg.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
+    glutInit()
+    glutInitDisplayMode(GLUT_RGBA)
+    glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT)
+    glutInitWindowPosition(0,0)
 
-    # Start the game and tell it attach it to the screen we just made
-    game(screen)
-
-    # End pygame
-    pg.quit()
+    window = glutCreateWindow("Game")
+    glutDisplayFunc(showScreen)
+    #glutIdleFunc(showScreen)
+    glutMainLoop()
+    
 
 
 if __name__ == "__main__":
