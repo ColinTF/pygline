@@ -1,6 +1,6 @@
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,windows
-# Edit at https://www.toptal.com/developers/gitignore?templates=python,windows
+# Edit at https://www.toptal.com/developers/gitignore?templates=python,window
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
@@ -8,7 +8,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# other
 dist/
+
+# VS Code
+.vscode
 
 # C extensions
 *.so

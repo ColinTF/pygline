@@ -2,10 +2,9 @@
 ### Do not add game engine features here
 
 import numpy as np
-import gamegine as gg
+from gamegine import gameobject as go
 
-
-class Player(gg.GameObject):
+class Player(go.GameObject):
     
     def __init__(self, name, screen, pos=np.zeros(2), tags=[]):
         super().__init__(name, pos=pos, tags=tags)
@@ -24,7 +23,7 @@ class Player(gg.GameObject):
         if event.keys[K_s]:
             self.physics.add_force([0, self.speed])
 
-class Player2(gg.GameObject):
+class Player2(go.GameObject):
     
     def __init__(self, name, screen, pos=np.zeros(2), tags=[]):
         super().__init__(name, pos=pos, tags=tags)
