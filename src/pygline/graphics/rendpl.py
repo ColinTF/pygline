@@ -1,5 +1,6 @@
 from OpenGL.GL import *
-from gamegine import components, shader
+
+from pygline.graphics.shader import Shader
 
 NP_FLOAT32_SIZE = 4
 
@@ -12,7 +13,7 @@ class RenderPipeline:
     Most users should not need to touch this
     """
 
-    def __init__(self, shader: shader.Shader):
+    def __init__(self):
         """
         Init the render pipline
         """
@@ -37,12 +38,14 @@ class RenderPipeline:
         glEnableVertexAttribArray(1)
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, NP_FLOAT32_SIZE*6, ctypes.c_void_p(NP_FLOAT32_SIZE*3))
 
-        # Set the shader
-        self.set_shader(shader)
 
-    def set_shader(self, shader: shader.Shader):
+    def set_shader(self, shader: Shader):
         """Tell the pipeline which shader to use"""
         glUseProgram(shader._shader)
+
+    def build_shaders(self):
+        """Finds and retirves all the shaders in the shaders folder"""
+        pass
 
     def render(self, vertices: np.ndarray, indices: np.ndarray):
         """

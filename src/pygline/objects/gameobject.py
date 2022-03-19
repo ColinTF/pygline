@@ -1,5 +1,7 @@
-from gamegine import components
+from pygline.objects import components
 import numpy as np
+
+from glfw import get_time
 
 class GameObject:
     """
@@ -31,7 +33,7 @@ class GameObject:
             - tags: list of strings to catagorize the object with
         """
         self._name = name
-        # self._creation_time = pg.time.get_ticks() / 1000.0
+        self._creation_time = get_time()
         self.tags = []
         self.tags.extend(self.default_tags)
 

@@ -33,8 +33,8 @@ class Scene:
         # access it through functions
         self.groups = {'default': {}}
 
-        self.vertices = np.array([])
-        self.indices = np.array([])
+        self.display_vertices = np.array([[]])
+        self.display_indices = np.array([])
     
 
     # Update the whole scene with delta time

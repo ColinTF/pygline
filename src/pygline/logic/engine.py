@@ -13,7 +13,9 @@ Thanks for checking it out!
 
 import glfw
 from OpenGL.GL import *
-from gamegine import rendpl, shader, locals
+
+from pygline.graphics.rendpl import *
+from pygline.logic.scene import Scene
 
 import os
 
@@ -48,10 +50,14 @@ class Game:
 
         # Init glfw and create a window and make sure both tasks complete succesfully
         if not glfw.init():
-            raise Exception("Cant initilize Window")
+            raise Exception("Cant initilize glfw")
         else:
 
+            # Hints to glfw
+            # glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE);
+            # glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, GL_TRUE);
             glfw.window_hint(glfw.RESIZABLE, glfw.FALSE) # Make the window not resizable
+
             self.window = glfw.create_window(self._width, self._height, self._name, None, None)
 
             if not self.window:
@@ -64,12 +70,13 @@ class Game:
                 print(f"Created game of size: {self._size} at time: {self._game_start_time}s")
 
                 # Do the rest now
-
                 glfw.set_window_pos(self.window, 20, 40)
                 glfw.make_context_current(self.window)
                 glViewport(0, 0, self._width, self._height)
+                glClearColor(0.07, 0.13, 0.17, 1.0)
 
                 # Define all other variables
+                self.scene = None
 
                 # Create our variables for time managment
                 self.time = glfw.get_time()
@@ -88,10 +95,16 @@ class Game:
     def load(self):
         """Load the resources we need to function"""
         # Create the objects we need
-        self.shader = shader.Shader(os.path.join(self.resource_path, self.shader_path), "vertex.vert", "fragment.frag")
+        self.shader = Shader(os.path.join(self.resource_path, self.shader_path), "default.vert", "default.frag")
         self.shader.compile()
 
-        self.render = rendpl.RenderPipeline(self.shader)
+        self.render = RenderPipeline()
+        self.render.set_shader(self.shader)
+
+    def set_scene(self, scene: Scene):
+        """Sets the active scene"""
+        self.scene = scene
+
 
 
     def start_game_loop(self):
@@ -101,7 +114,12 @@ class Game:
         The game loop will only end when the "window_should_close()" as defined by glfw or another exit condition is met
         """
 
+        glClearColor(0.07, 0.13, 0.17, 1.0)
+
         while not glfw.window_should_close(self.window):
+
+            if (glfw.get_key(self.window, glfw.KEY_ESCAPE) == glfw.PRESS):
+                glfw.set_window_should_close(self.window, GL_TRUE)
 
             # Update variables for time managment
             self.time = glfw.get_time()
@@ -110,7 +128,9 @@ class Game:
 
             glfw.poll_events()
             
-            
+            # Update current scene with delta time
+            if not not self.scene:
+                self.scene.update(self.delta_time)
 
             glfw.swap_buffers(self.window)
 

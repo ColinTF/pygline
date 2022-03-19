@@ -10,7 +10,8 @@ import os
 
 # import our own game engine
 # from src.gamegine import engine
-from gamegine import engine
+
+import pygline as pg
 
 
 #import our own custom classes
@@ -30,14 +31,24 @@ class Test_Main:
 
         print("\n\n")
         
+        # Create the path to the resources folder
         path = os.getcwd()
         resource_path = "src\\tests\\resources"
         resource_path_abs = os.path.join(path, resource_path)
 
-        game = engine.Game("Gamegine", (WIDTH, HEIGHT))
+        scene1 = pg.Scene()
 
+        player1 = ent.Player('Player', [0, 0])
+
+        scene1.add_object(player1, 'Players')
+
+        game = pg.Game("Test Game With pygline", (WIDTH, HEIGHT))
+
+        # Tell the game where to look for resources
         game.set_resource_dir(resource_path_abs)
         game.load()
+
+        game.set_scene(scene1)
 
         game.start_game_loop()
 

@@ -1,5 +1,5 @@
 import numpy as np
-from gamegine import locals
+from pygline.locals import *
 
 class component:
     """
@@ -23,27 +23,72 @@ class component:
 # Allow the object to be re
 # rendered to the screen
 class mesh(component):
+    """
+    Stores mesh data in the form of vertices and indices
+    """
 
-    def __init__(self, owner, rel_location : np.ndarray = np.zeros(2), color : tuple[float] = (1.0, 1.0, 1.0)):
+    def __init__(self, owner, scale : np.ndarray = np.ones(2)/10, rel_location : np.ndarray = np.zeros(2), vertices : np.ndarray = None, primitive_shape : int = PRIMITE_SQUARE):
+        """
+        Create a mesh component controlled by the parent/owner
+
+        Args:
+            - owner: parent to the component
+            - scale: relative scale to owner
+            - rel_location: relative postion to owner
+            - vertices: 2d numpy array of vertices
+            - primite_shape: a pre-defined primitive, used if no vertices are given
+        """
         super().__init__(owner)
 
         self.rel_location = rel_location
+        self.rel_rotation = 0
+        
+        # If no mesh is defined make a primitve
+        if not vertices:
+            if (primitive_shape == PRIMITE_SQUARE):
+                self.verts = np.array([[-1.0, -1.0],
+                                       [-1.0,  1.0],
+                                       [ 1.0, -1.0],
+                                       [ 1.0,  1.0]], dtype=np.float32)
 
-        self.rotation = 0
+                self.indices = np.array([0, 1, 2,
+                                        1, 2, 3], dtype=np.uint32)
+
+            elif (primitive_shape == PRIMITE_TRIANGLE):
+                self.verts = np.array([[-1.0, -1.0],
+                                       [-1.0,  1.0],
+                                       [ 1.0,  1.0]], dtype=np.float32)
+
+                self.indices = np.array([0, 1, 2], dtype=np.uint32)
+
+            elif (primitive_shape == PRIMITE_RIGHT_TRIANGLE):
+                self.verts = np.array([[-1.0, -1.0],
+                                       [-1.0,  1.0],
+                                       [ 1.0,  1.0]], dtype=np.float32)
+
+                self.indices = np.array([0, 1, 2], dtype=np.uint32)
+
+            else:
+                raise Exception("No such primitive exists")
+
+
+
+    def normalize_verts():
+        """Normalize the whole matrix of vertices in the mesh to have length one"""
+        pass
+
+
 
     # Draws the surface to the screen at its position
     def update(self, delta_time):
         super().update(delta_time)
 
-        if self.rotation != self.owner.rotation:
-            self.rotation = self.owner.rotation
-
 
 # Allow the object to interact with the world
-class physics(component):
+class rigidbody(component):
 
     def __init__(self, owner, mass=1, friction=0.1, collision=True, gravity=False, passive=False):
-        super(physics, self).__init__(owner)
+        super().__init__(owner)
 
         self.mass = mass
 
@@ -63,7 +108,7 @@ class physics(component):
 
     # Update the postion using math and delta time
     def update(self, delta_time):
-        super(physics, self).update(delta_time)
+        super().update(delta_time)
 
         self.forces *= (1 - self.friction)
 
