@@ -10,6 +10,7 @@ __pycache__/
 
 # other
 # dist/
+.VSCodeCounter
 
 # VS Code
 .vscode
