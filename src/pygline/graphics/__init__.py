@@ -1,2 +1,2 @@
 from .rendpl import RenderPipeline
-from .shader import Shader
+from .shader import ShaderProgram

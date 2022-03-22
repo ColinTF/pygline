@@ -42,11 +42,7 @@ class Test_Main:
 
         scene1.add_object(player1, 'Players')
 
-        game = pg.Game("Test Game With pygline", (WIDTH, HEIGHT))
-
-        # Tell the game where to look for resources
-        game.set_resource_dir(resource_path_abs)
-        game.load()
+        game = pg.Game("Test Game With pygline", (WIDTH, HEIGHT), resource_path_abs)
 
         game.set_scene(scene1)
 

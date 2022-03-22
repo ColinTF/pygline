@@ -30,7 +30,7 @@ class Game:
         - save and load scenes
     """
 
-    def __init__(self, name: str, size: tuple[int, int]):
+    def __init__(self, name: str, size: tuple[int, int], src_path : str):
 
         """
         Initialize the game engine
@@ -84,27 +84,20 @@ class Game:
                 self.delta_time = self.time - self.last_time
 
                 # Set the resources paths and subpaths to here
-                self.resource_path = "\\"
-                self.shader_path = "shaders\\"
+                self.set_resource_dir(src_path)
+
+                self.rendpl = RenderPipeline(self.resource_path)
+
 
 
     def set_resource_dir(self, path : str):
         """Set the path to look for game resources"""
         self.resource_path = path
 
-    def load(self):
-        """Load the resources we need to function"""
-        # Create the objects we need
-        self.shader = Shader(os.path.join(self.resource_path, self.shader_path), "default.vert", "default.frag")
-        self.shader.compile()
-
-        self.render = RenderPipeline()
-        self.render.set_shader(self.shader)
 
     def set_scene(self, scene: Scene):
         """Sets the active scene"""
         self.scene = scene
-
 
 
     def start_game_loop(self):
@@ -132,11 +125,14 @@ class Game:
             if not not self.scene:
                 self.scene.update(self.delta_time)
 
+            self.rendpl.render(self.rendpl.verts, self.rendpl.indices)
+
             glfw.swap_buffers(self.window)
 
     def end(self):
         """Kills the game window and ends glfw"""
         # Print to console that the game ended
         print(f"Ended game at time: {self._game_start_time}s")
+        self.rendpl.end()
         glfw.destroy_window(self.window)
         glfw.terminate()
