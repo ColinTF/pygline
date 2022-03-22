@@ -1,5 +1,4 @@
-### This file will manage all the user built classes outside of the core game engine
-### Do not add game engine features here
+"""This file will manage all the "user" built classes outside of the core game engine for testing"""
 
 import numpy as np
 import pygline as pg

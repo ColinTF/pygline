@@ -76,6 +76,9 @@ class Game:
                 glViewport(0, 0, self._width, self._height)
                 glClearColor(0.07, 0.13, 0.17, 1.0)
 
+                # Setup our event handlers
+                glfw.set_key_callback(self.window, self.key_callback)
+
                 # Define all other variables
                 self.scene = None
 
@@ -89,7 +92,12 @@ class Game:
 
                 self.rendpl = RenderPipeline(self.resource_path)
 
+    def key_callback(self, window, key : int, scancode : int, action : int, mods : int):
+        """Callback function to handle keyboard events"""
 
+        # Handle window closing this should take priority at all times
+        if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
+                glfw.set_window_should_close(self.window, GL_TRUE)
 
     def set_resource_dir(self, path : str):
         """Set the path to look for game resources"""
@@ -112,15 +120,10 @@ class Game:
 
         while not glfw.window_should_close(self.window):
 
-            if (glfw.get_key(self.window, glfw.KEY_ESCAPE) == glfw.PRESS):
-                glfw.set_window_should_close(self.window, GL_TRUE)
-
             # Update variables for time managment
             self.time = glfw.get_time()
             self.delta_time = self.time - self.last_time
             self.last_time = self.time
-
-            glfw.poll_events()
             
             # Update current scene with delta time
             if not not self.scene:
@@ -128,7 +131,11 @@ class Game:
 
             self.rendpl.render(self.scene.vertices, self.scene.indices)
 
+            # Swap buffers to display
             glfw.swap_buffers(self.window)
+
+            # Receive inputs
+            glfw.poll_events()
 
     def end(self):
         """Kills the game window and ends glfw"""
