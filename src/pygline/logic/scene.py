@@ -1,16 +1,19 @@
 
 
 # The imports we need
-from typing import Callable
 import numpy as np
 
 # Rendering imports
 import glfw
 from OpenGL.GL import *
 
+from pygline.objects import *
 
 # system imports
 import os
+from pygline.objects.components import Mesh
+
+from pygline.objects.gameobject import GameObject
 
 
 class Scene:
@@ -33,15 +36,26 @@ class Scene:
         # access it through functions
         self.groups = {'default': {}}
 
-        self.display_vertices = np.array([[]])
-        self.display_indices = np.array([])
+        self.vertices = np.array([[]], dtype=np.float32)
+        self.indices = np.array([], dtype=np.uint32)
     
 
     # Update the whole scene with delta time
     def update(self, delta_time):
 
+        self.vertices = np.array([[]], dtype=np.float32)
+        self.indices = np.array([], dtype=np.uint32)
+
+        max = 0
+
+        object : GameObject
         for object in self.get_objects(tags=['updates']):
             object.update(delta_time)
+            if object.has_tags(['visible']):
+                self.vertices = np.append(self.vertices, object.mesh.vertices)
+                self.indices = np.append(self.indices, max + object.mesh.indices)
+                max = np.max(self.indices) + 1
+
             
 
     # This next section if for object managment

@@ -1,4 +1,5 @@
 from OpenGL.GL import *
+from pyrsistent import v
 
 from pygline.graphics.shader import ShaderProgram
 from pygline.graphics.gpubuffers import *
@@ -21,30 +22,12 @@ class RenderPipeline:
         Init the render pipline with the path to the source files
         """
 
-        self.verts = np.array([-0.5, -0.5, 0.0,
-                                0.5, -0.5, 0.0,
-                                -0.5, 0.5, 0.0,
-                                0.5, 0.5, 0.0], dtype=np.float32)
-        self.indices = np.array([0, 1, 2, 1, 2, 3], dtype=np.uint32)
-
         self.shaders = {}
 
         default_shader = ShaderProgram(os.path.join(src_path, "shaders"), "default.vert", "default.frag")
 
         self.add_shader('default', default_shader)
         # self.use_shader('default')
-
-        self.vao = VAO()
-        self.vao.bind()
-
-        self.vbo = VBO(self.verts, NP_32_SIZE*len(self.verts), GL_STATIC_DRAW)
-        self.ebo = EBO(self.indices, NP_32_SIZE*len(self.indices), GL_STATIC_DRAW)
-
-        self.vao.link_attrib(self.vbo, 0, 3, GL_FLOAT, NP_32_SIZE*3)
-        self.vao.unbind()
-
-        self.vbo.unbind()
-        self.ebo.unbind()
 
         # Set the bg color #TODO make this changeable
         glClearColor(0.07, 0.13, 0.17, 1.0)
@@ -70,11 +53,25 @@ class RenderPipeline:
         # Clear right before we display to minimize flicker I would suspect
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
+        # TODO optimize this process
+        self.vao = VAO()
+        self.vao.bind()
+
+
+        self.vbo = VBO(vertices, NP_32_SIZE*len(vertices), GL_DYNAMIC_DRAW)
+        self.ebo = EBO(indices, NP_32_SIZE*len(indices), GL_DYNAMIC_DRAW)
+
+        self.vao.link_attrib(self.vbo, 0, 2, GL_FLOAT, NP_32_SIZE*2, 0)
+        self.vao.unbind()
+
+        self.vbo.unbind()
+        self.ebo.unbind()
+
         self.use_shader('default')
         self.vao.bind()
 
         # Finally draw to the screen with the correct method #TODO add new mthods
-        glDrawElements(GL_TRIANGLES, len(self.indices), GL_UNSIGNED_INT, None)
+        glDrawElements(GL_TRIANGLES, len(indices), GL_UNSIGNED_INT, None)
 
     def end(self):
         """Destroy buffers and shaders"""

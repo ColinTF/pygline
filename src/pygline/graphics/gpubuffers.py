@@ -59,12 +59,12 @@ class VAO():
         """Init the buffer with the passed OpenGL buffer type"""
         self.buffer = glGenVertexArrays(1)
 
-    def link_attrib(self, vbo : VBO, layout : int, size : int, data_type : type, stride : int):
+    def link_attrib(self, vbo : VBO, layout : int, size : int, data_type : type, stride : int, start: int):
         """Temporarily bind the passed vbo and set vertex attribute data at the layout position"""
 
         vbo.bind()
 
-        glVertexAttribPointer(layout, size, data_type, GL_FALSE, stride, ctypes.c_void_p(stride))
+        glVertexAttribPointer(layout, size, data_type, GL_FALSE, stride, ctypes.c_void_p(start))
         glEnableVertexAttribArray(layout)
 
         vbo.unbind()

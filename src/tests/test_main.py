@@ -49,3 +49,26 @@ class Test_Main:
         game.start_game_loop()
 
         game.end()
+
+    def test_multiple_characters(self):
+
+        print("\n\n")
+        
+        # Create the path to the resources folder
+        path = os.getcwd()
+        resource_path = "src\\tests\\resources"
+        resource_path_abs = os.path.join(path, resource_path)
+
+        scene1 = pg.Scene()
+
+        for i in range(0, 5000):
+            player = ent.Player('Player' + str(i), 2*np.array([random.random()-0.5, random.random()-0.5]))
+            scene1.add_object(player, 'Players')
+
+        game = pg.Game("Test Game With pygline", (WIDTH, HEIGHT), resource_path_abs)
+
+        game.set_scene(scene1)
+
+        game.start_game_loop()
+
+        game.end()

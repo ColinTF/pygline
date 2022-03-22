@@ -22,7 +22,7 @@ class component:
 
 # Allow the object to be re
 # rendered to the screen
-class mesh(component):
+class Mesh(component):
     """
     Stores mesh data in the form of vertices and indices
     """
@@ -40,36 +40,45 @@ class mesh(component):
         """
         super().__init__(owner)
 
+        # By default give the owner a visible tag
+        self.owner.add_tag('visible')
+
         self.rel_location = rel_location
         self.rel_rotation = 0
         
         # If no mesh is defined make a primitve
         if not vertices:
             if (primitive_shape == PRIMITE_SQUARE):
-                self.verts = np.array([[-1.0, -1.0],
-                                       [-1.0,  1.0],
-                                       [ 1.0, -1.0],
-                                       [ 1.0,  1.0]], dtype=np.float32)
+                self.vertices = np.array([-1.0, -1.0,
+                                          -1.0,  1.0,
+                                           1.0, -1.0,
+                                           1.0,  1.0], dtype=np.float32)
 
                 self.indices = np.array([0, 1, 2,
-                                        1, 2, 3], dtype=np.uint32)
+                                         1, 2, 3], dtype=np.uint32)
 
             elif (primitive_shape == PRIMITE_TRIANGLE):
-                self.verts = np.array([[-1.0, -1.0],
-                                       [-1.0,  1.0],
-                                       [ 1.0,  1.0]], dtype=np.float32)
+                self.vertices = np.array([ 0.0,  1.0,
+                                          -1.0, -1.0,
+                                           1.0, -1.0], dtype=np.float32)
 
-                self.indices = np.array([0, 1, 2], dtype=np.uint32)
+                self.indices = np.array([2, 1, 0], dtype=np.uint32)
 
             elif (primitive_shape == PRIMITE_RIGHT_TRIANGLE):
-                self.verts = np.array([[-1.0, -1.0],
-                                       [-1.0,  1.0],
-                                       [ 1.0,  1.0]], dtype=np.float32)
+                self.vertices = np.array([-1.0, -1.0,
+                                          -1.0,  1.0,
+                                           1.0,  1.0], dtype=np.float32)
 
                 self.indices = np.array([0, 1, 2], dtype=np.uint32)
 
             else:
                 raise Exception("No such primitive exists")
+
+        # Seprate into indidual vertices to apply operations
+        for i in range(0, len(self.vertices), 2): 
+            self.vertices[i:i + 2] = self.vertices[i:i + 2] * scale + self.rel_location + self.owner.position
+
+            
 
 
 

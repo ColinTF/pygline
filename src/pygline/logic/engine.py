@@ -17,6 +17,7 @@ from OpenGL.GL import *
 from pygline.graphics.rendpl import *
 from pygline.logic.scene import Scene
 
+
 import os
 
 # Lets write our class to handle opengl with glfw
@@ -125,7 +126,7 @@ class Game:
             if not not self.scene:
                 self.scene.update(self.delta_time)
 
-            self.rendpl.render(self.rendpl.verts, self.rendpl.indices)
+            self.rendpl.render(self.scene.vertices, self.scene.indices)
 
             glfw.swap_buffers(self.window)
 
