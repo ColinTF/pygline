@@ -1,5 +1,6 @@
 import numpy as np
 from pygline.locals import *
+from pygline.common import Vertex
 
 class component:
     """
@@ -45,6 +46,8 @@ class Mesh(component):
 
         self.rel_location = rel_location
         self.rel_rotation = 0
+
+        
         
         # If no mesh is defined make a primitve
         if not vertices:
