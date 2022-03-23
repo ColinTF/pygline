@@ -11,7 +11,7 @@ class ShaderProgram:
     A shader tells the game engine how to handle vertices and colors when displaying them
     """
 
-    def __init__(self, shader_src: str, vert_src: str, frag_src: str):
+    def __init__(self, shader_src: str, src: str):
         """
         Create a shader from the passed shader files
 
@@ -28,11 +28,11 @@ class ShaderProgram:
         """
 
         # For each, open the files and read the contents then close the file
-        vert_src = open(os.path.join(shader_src, vert_src), 'r')
+        vert_src = open(os.path.join(shader_src, src + ".vert"), 'r')
         self._vert_data = vert_src.read()
         vert_src.close()
 
-        frag_src = open(os.path.join(shader_src, frag_src), 'r')
+        frag_src = open(os.path.join(shader_src, src + ".frag"), 'r')
         self._frag_data = frag_src.read()
         frag_src.close()
 

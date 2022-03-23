@@ -22,11 +22,10 @@ class RenderPipeline:
         Init the render pipline with the path to the source files
         """
 
+        # Create an empty list of named available shaders
         self.shaders = {}
 
-        default_shader = ShaderProgram(os.path.join(src_path, "shaders"), "default.vert", "default.frag")
-
-        self.add_shader('default', default_shader)
+        self.add_shader(os.path.join(src_path, "shaders"), 'default')
         # self.use_shader('default')
 
         # Set the bg color #TODO make this changeable
@@ -35,8 +34,8 @@ class RenderPipeline:
         # Some default settings we want to set
         glEnable(GL_DEPTH_TEST)
 
-    def add_shader(self, name, shader : ShaderProgram):
-        self.shaders[name] = shader
+    def add_shader(self, path : str, file_name : str):
+        self.shaders[file_name] = ShaderProgram(path, file_name)
 
     def use_shader(self, name):
         glUseProgram(self.shaders[name]._shader)

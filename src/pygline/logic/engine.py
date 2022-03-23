@@ -11,6 +11,7 @@ For now this project mostly functions as a way to learn opengl and improve my py
 Thanks for checking it out!
 """
 
+from typing import Callable
 import glfw
 from OpenGL.GL import *
 
@@ -92,12 +93,17 @@ class Game:
 
                 self.rendpl = RenderPipeline(self.resource_path)
 
-    def key_callback(self, window, key : int, scancode : int, action : int, mods : int):
+    def key_callback(self, window : glfw._GLFWwindow, key : int, scancode : int, action : int, mods : int):
         """Callback function to handle keyboard events"""
 
         # Handle window closing this should take priority at all times
         if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
                 glfw.set_window_should_close(self.window, GL_TRUE)
+
+
+    def add_event_listener(self, type, function : Callable, key=None):
+        """Tell the engine to call a function and pass the event when an event is triggerd"""
+        pass
 
     def set_resource_dir(self, path : str):
         """Set the path to look for game resources"""
