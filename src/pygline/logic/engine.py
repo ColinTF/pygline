@@ -18,6 +18,8 @@ from OpenGL.GL import *
 from pygline.graphics.rendpl import *
 from pygline.logic.scene import Scene
 
+from pygline.logic.event import *
+
 
 import os
 
@@ -77,8 +79,9 @@ class Game:
                 glViewport(0, 0, self._width, self._height)
                 glClearColor(0.07, 0.13, 0.17, 1.0)
 
-                # Setup our event handlers
-                glfw.set_key_callback(self.window, self.key_callback)
+                # Setup our event handler
+                self.event_handler = EventHandler(self.window)
+                self.event_handler.add_event_listener(KEY_EVENT, self.global_key_input)
 
                 # Define all other variables
                 self.scene = None
@@ -93,11 +96,11 @@ class Game:
 
                 self.rendpl = RenderPipeline(self.resource_path)
 
-    def key_callback(self, window : glfw._GLFWwindow, key : int, scancode : int, action : int, mods : int):
-        """Callback function to handle keyboard events"""
+    def global_key_input(self, event : KeyEvent):
+        """Callback function to handle global keyboard events that should always be checked"""
 
         # Handle window closing this should take priority at all times
-        if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
+        if event.key == glfw.KEY_ESCAPE and event.action == glfw.PRESS:
                 glfw.set_window_should_close(self.window, GL_TRUE)
 
 
@@ -112,7 +115,16 @@ class Game:
 
     def set_scene(self, scene: Scene):
         """Sets the active scene"""
+        # Clear the event handler and populate it with everything in the new scene
+        self.event_handler.reset()
+        self.event_handler.add_event_listener(KEY_EVENT, self.global_key_input)
+
         self.scene = scene
+
+        for object in self.scene.get_objects():
+            key_listener = getattr(object, 'on_key_event', None)
+            if callable(key_listener):
+                self.event_handler.add_event_listener(KEY_EVENT, key_listener)
 
 
     def start_game_loop(self):
@@ -146,7 +158,7 @@ class Game:
     def end(self):
         """Kills the game window and ends glfw"""
         # Print to console that the game ended
-        print(f"Ended game at time: {self._game_start_time}s")
+        print(f"Ended game at time: {self.time} s")
         self.rendpl.end()
         glfw.destroy_window(self.window)
         glfw.terminate()

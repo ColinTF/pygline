@@ -1,6 +1,8 @@
 from pygline.objects import components
 import numpy as np
 
+from pygline.logic.event import *
+
 from glfw import get_time
 
 class GameObject:

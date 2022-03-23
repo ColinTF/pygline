@@ -76,7 +76,7 @@ class Mesh(component):
 
         # Seprate into indidual vertices to apply operations
         for i in range(0, len(self.vertices), 2): 
-            self.vertices[i:i + 2] = self.vertices[i:i + 2] * scale + self.rel_location + self.owner.position
+            self.vertices[i:i + 2] = self.vertices[i:i + 2] * scale + self.rel_location
 
             
 
@@ -92,9 +92,12 @@ class Mesh(component):
     def update(self, delta_time):
         super().update(delta_time)
 
+        
+
 
 # Allow the object to interact with the world
-class rigidbody(component):
+class RigidBody(component):
+
 
     def __init__(self, owner, mass=1, friction=0.1, collision=True, gravity=False, passive=False):
         super().__init__(owner)

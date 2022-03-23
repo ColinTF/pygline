@@ -42,7 +42,7 @@ class Test_Main:
 
         scene1.add_object(player1, 'Players')
 
-        game = pg.Game("Test Game With pygline", (WIDTH, HEIGHT), resource_path_abs)
+        game = pg.Game("Test Game With pygline", (WIDTH, HEIGHT//2), resource_path_abs)
 
         game.set_scene(scene1)
 
@@ -61,7 +61,7 @@ class Test_Main:
 
         scene1 = pg.Scene()
 
-        for i in range(0, 5000):
+        for i in range(0, 500):
             player = ent.Player('Player' + str(i), 2*np.array([random.random()-0.5, random.random()-0.5]))
             scene1.add_object(player, 'Players')
 

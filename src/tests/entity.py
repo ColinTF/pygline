@@ -3,16 +3,19 @@
 import numpy as np
 import pygline as pg
 
-from pygline import locals as ggls
+from pygline import locals as pgl
+from pygline.logic.event import *
 
 class Player(pg.GameObject):
     
     def __init__(self, name, pos=np.zeros(2), tags=[]):
         super().__init__(name, pos=pos, tags=tags)
-        self.mesh =  pg.components.Mesh(self, scale=[0.01, 0.01], primitive_shape=ggls.PRIMITE_SQUARE)
-        self.rigidbody = pg.components.rigidbody(self, mass=5)
+        self.mesh =  pg.components.Mesh(self, scale=[0.01, 0.01], primitive_shape=pgl.PRIMITE_SQUARE)
+        self.rigidbody = pg.components.RigidBody(self, mass=5)
 
         self.speed = 200
 
-    def input(self, event):
-        pass
+    # This function is special its named tells the engine that it is an event listener
+    def on_key_event(self, event : KeyEvent):
+        if event.key == glfw.KEY_W and event.action == glfw.PRESS:
+            self.position[0] += 100
