@@ -2,6 +2,8 @@
 
 This package provides a light weight and fast game engine developed specifically for rapid game design and protyping. This project was created by ColinTF and it is currently in the developement phase and now released have been made. 
 
+My personal goal is to make game development easier and more accessible.
+
 ## Requirments
 - [PyOpenGl](https://github.com/mcfletch/pyopengl)
 	- The opengl package we use
@@ -11,6 +13,9 @@ This package provides a light weight and fast game engine developed specifically
 - [pyGLFW](https://github.com/FlorianRhiem/pyGLFW)
 	- The package we use to actually use opengl
 	- `pip install glfw`
+- [numpy](https://numpy.org/)
+	- The package we use for math
+	- `pip install numpy`
  
  
  ### Notes
