@@ -30,7 +30,16 @@ class Vertex:
 
     Groups of vertices are used to define objects through the Mesh Class and what color they should be.
     Use the `vert.xyz` or `vert.rgb` or variants like `vert.zxy` and `vert.xyrg` to use the data as a numpy array in the order of the attributes.
-    Use the `vert.coords` or `vert.color` to get the just the positional or color data as a numpy array.
+    Use the `vert.coords` or `vert.color` to get the just the positional or color data as a numpy array. The functionality is designed to be very flexible however,
+    thats means behaviour may sometimes be unexpected.
+
+    Comparison and math operations only affect the positional data and behave similarly to assignment:
+        - `==` : compares the x,y,z values element wise
+        - `<`,`>` : compares the magnitude of the vertex
+        - `+`,`-`,`*`,`/` : acts accordingly based on the type of the other object
+            - if other is a Vertex : acts element wise
+            - if other is a array : acts element wise for values that exist in array
+            - if other is a number : acts on all x,y,z values
 
     ---
 
