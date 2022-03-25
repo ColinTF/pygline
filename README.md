@@ -11,6 +11,9 @@ This package provides a light weight and fast game engine developed specifically
 - [pyGLFW](https://github.com/FlorianRhiem/pyGLFW)
 	- The package we use to actually use opengl
 	- `pip install glfw`
+- [numpy](https://numpy.org/)
+	- The package we use for math
+	- `pip install numpy`
  
  
  ### Notes
