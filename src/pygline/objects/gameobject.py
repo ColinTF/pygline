@@ -14,10 +14,10 @@ class GameObject:
     Here is what GameObjects can do:
         - have one parent and may have multiple children
         - be organized with tags
-        - own components
+        - own components like `Mesh`, `RigidBody`, etc.
 
     Warnings:
-        - every name MUST be unique. There is built-in methods to do this
+        - every name *MUST* be unique. There is built-in methods to do this
     """
 
     # The default tags to use
