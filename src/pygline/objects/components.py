@@ -7,19 +7,13 @@ class component:
     Components are attached to objects to make them unqiue and interact
 
     Components can be defined by the user but built-ins include:
-        - Physics
+        - RigidBody
         - Mesh
         - #TODO add more components
     """
 
     def __init__(self, owner):
         self.owner = owner
-
-    def update(self, delta_time):
-        pass
-
-    def kill(self):
-        pass
 
 # Allow the object to be re
 # rendered to the screen
@@ -30,8 +24,10 @@ class Mesh(component):
     The mesh class acts as a list of `Vertex`s
 
     Attributes:
+        - `owner` : `GameObject` - the owner who controls the mesh
         - `vertices` : `list[Vertex]` - stores all the vertices can be accessed directly or indirectly
         - `indices` : `list[int]` - order of vertices used to describe the mesh
+        - `scale` : `np.ndarray` - the xyz scale of the mesh
 
     Methods:
         - `normalize()` -> `None` - normalizes all the vertices so that the `Vertex` with the longest length has length one
@@ -48,29 +44,31 @@ class Mesh(component):
     ## Notes
 
     None
-    
+
     """
 
     # 2D Shapes
-    PRIMITE_SQUARE = 0
+    PRIMITIVE_SQUARE = 0
     """A square using 4 `Vertex`s"""
-    PRIMITE_TRIANGLE = 1
+    PRIMITIVE_TRIANGLE = 1
     """A triangle using 3 `Vertex`s"""
-    PRIMITE_RIGHT_TRIANGLE = 2
+    PRIMITIVE_RIGHT_TRIANGLE = 2
     """A right triangle using 3 `Vertex`s"""
 
-    def __init__(self, owner, scale : np.ndarray = np.ones(2)/10, rel_location : np.ndarray = np.zeros(2), vertices : np.ndarray = None, primitive_shape : int = PRIMITE_SQUARE):
+    def __init__(self, owner, scale : np.ndarray = np.ones(3)/10, rel_location : np.ndarray = np.zeros(2), vertices : np.ndarray = None, primitive_shape : int = PRIMITIVE_SQUARE):
         """
-        
-        Creates a mesh component controlled by the parent/owner
+
+        Create a new mesh and set the owners tag to visible.
 
         Args:
-            - owner: parent to the component
-            - scale: relative scale to owner
-            - rel_location: relative postion to owner
-            - vertices: 2d numpy array of vertices
-            - primite_shape: a pre-defined primitive, used if no vertices are given
+            - `owner` : `GameObject` - the owner who controls the mesh
+            - `rel_location` : `np.ndarray` - the xyz relative location of the mesh to the owner
+            - `scale` : `np.ndarray` - the xyz scale to give the mesh
+            - `vertices` : `list[Vertex]` - sets the vertices of the mesh, overides the primitive
+            - `primitive_shape` : `int` - the shape of the mesh if no vertices are given
+
         """
+
         super().__init__(owner)
 
         # By default give the owner a visible tag
@@ -83,7 +81,7 @@ class Mesh(component):
         
         # If no mesh is defined make a primitve
         if not vertices:
-            if (primitive_shape == self.PRIMITE_SQUARE):
+            if (primitive_shape == self.PRIMITIVE_SQUARE):
                 self.vertices = np.array([-1.0, -1.0,
                                           -1.0,  1.0,
                                            1.0, -1.0,
@@ -92,14 +90,14 @@ class Mesh(component):
                 self.indices = np.array([0, 1, 2,
                                          1, 2, 3], dtype=np.uint32)
 
-            elif (primitive_shape == self.PRIMITE_TRIANGLE):
+            elif (primitive_shape == self.PRIMITIVE_TRIANGLE):
                 self.vertices = np.array([ 0.0,  1.0,
                                           -1.0, -1.0,
                                            1.0, -1.0], dtype=np.float32)
 
                 self.indices = np.array([2, 1, 0], dtype=np.uint32)
 
-            elif (primitive_shape == self.PRIMITE_RIGHT_TRIANGLE):
+            elif (primitive_shape == self.PRIMITIVE_RIGHT_TRIANGLE):
                 self.vertices = np.array([-1.0, -1.0,
                                           -1.0,  1.0,
                                            1.0,  1.0], dtype=np.float32)
@@ -120,12 +118,6 @@ class Mesh(component):
     def normalize_verts():
         """Normalize the whole matrix of vertices in the mesh to have length one"""
         pass
-
-
-
-    # Draws the surface to the screen at its position
-    def update(self, delta_time):
-        super().update(delta_time)
 
         
 
