@@ -16,6 +16,7 @@ __pycache__/
 .vscode
 
 # docs
+update_docs.bat
 
 # C extensions
 *.so
