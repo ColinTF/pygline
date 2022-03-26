@@ -25,12 +25,44 @@ class component:
 # rendered to the screen
 class Mesh(component):
     """
-    Stores mesh data in the form of vertices and indices
+    # Mesh
+
+    The mesh class acts as a list of `Vertex`s
+
+    Attributes:
+        - `vertices` : `list[Vertex]` - stores all the vertices can be accessed directly or indirectly
+        - `indices` : `list[int]` - order of vertices used to describe the mesh
+
+    Methods:
+        - `normalize()` -> `None` - normalizes all the vertices so that the `Vertex` with the longest length has length one
+
+    ---
+
+    ## Usage
+
+    Assign a `Mesh` to an object to make it renderable. `Mesh` can also be used to describe the collision bounds of an object. 
+    If applicable, like a base shape, use the same object to descibe both for optimization.
+
+    ---
+
+    ## Notes
+
+    None
+    
     """
+
+    # 2D Shapes
+    PRIMITE_SQUARE = 0
+    """A square using 4 `Vertex`s"""
+    PRIMITE_TRIANGLE = 1
+    """A triangle using 3 `Vertex`s"""
+    PRIMITE_RIGHT_TRIANGLE = 2
+    """A right triangle using 3 `Vertex`s"""
 
     def __init__(self, owner, scale : np.ndarray = np.ones(2)/10, rel_location : np.ndarray = np.zeros(2), vertices : np.ndarray = None, primitive_shape : int = PRIMITE_SQUARE):
         """
-        Create a mesh component controlled by the parent/owner
+        
+        Creates a mesh component controlled by the parent/owner
 
         Args:
             - owner: parent to the component
@@ -51,7 +83,7 @@ class Mesh(component):
         
         # If no mesh is defined make a primitve
         if not vertices:
-            if (primitive_shape == PRIMITE_SQUARE):
+            if (primitive_shape == self.PRIMITE_SQUARE):
                 self.vertices = np.array([-1.0, -1.0,
                                           -1.0,  1.0,
                                            1.0, -1.0,
@@ -60,14 +92,14 @@ class Mesh(component):
                 self.indices = np.array([0, 1, 2,
                                          1, 2, 3], dtype=np.uint32)
 
-            elif (primitive_shape == PRIMITE_TRIANGLE):
+            elif (primitive_shape == self.PRIMITE_TRIANGLE):
                 self.vertices = np.array([ 0.0,  1.0,
                                           -1.0, -1.0,
                                            1.0, -1.0], dtype=np.float32)
 
                 self.indices = np.array([2, 1, 0], dtype=np.uint32)
 
-            elif (primitive_shape == PRIMITE_RIGHT_TRIANGLE):
+            elif (primitive_shape == self.PRIMITE_RIGHT_TRIANGLE):
                 self.vertices = np.array([-1.0, -1.0,
                                           -1.0,  1.0,
                                            1.0,  1.0], dtype=np.float32)

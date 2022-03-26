@@ -5,7 +5,6 @@ from pygline.locals import *
 import glfw
 
 
-
 @dataclass(kw_only=True)
 class Event:
     """
@@ -17,6 +16,17 @@ class Event:
     
     """
 
+    EMPTY_EVENT = 0
+    """Place holder event"""
+    KEY_EVENT = 1
+    """A key has been triggered"""
+    GENERIC_MOUSE_EVENT = 2
+    """A mouse event has occurred"""
+    CLICK_MOUSE_EVENT = 3
+    """The mouse has been clicked"""
+    MOVE_MOUSE_EVENT = 4
+    """The mouse has moved"""
+
     #time : float = field(default_factory=glfw.get_time(), init=False)
     type : int = field(default=EMPTY_EVENT, init=False)
 
@@ -26,7 +36,7 @@ class KeyEvent(Event):
 
     key : int
     action : int
-    type : int = field(default=KEY_EVENT, init=False)
+    type : int = field(default=Event.KEY_EVENT, init=False)
 
 @dataclass(kw_only=True)
 class MouseEvent(Event):
@@ -36,7 +46,7 @@ class MouseEvent(Event):
     action : int = None
     pos : tuple[float, float] = None
     # Default should be generic and be set by user
-    type : int = field(default=GENERIC_MOUSE_EVENT)
+    type : int = field(default=Event.GENERIC_MOUSE_EVENT)
 
 class EventHandler:
     """Handles events and calls functions based on type"""
@@ -50,7 +60,7 @@ class EventHandler:
 
         # A dict with keys represrents by type of event contains a list of the functions to call on event triggered
         
-        self.listeners : dict[int, list[Callable]] = {EMPTY_EVENT : [], KEY_EVENT : [], MOVE_MOUSE_EVENT : [], CLICK_MOUSE_EVENT : [], GENERIC_MOUSE_EVENT : []} 
+        self.listeners : dict[int, list[Callable]] = {Event.EMPTY_EVENT : [], Event.KEY_EVENT : [], Event.MOVE_MOUSE_EVENT : [], Event.CLICK_MOUSE_EVENT : [], Event.GENERIC_MOUSE_EVENT : []} 
         """Dict of lists of function sorted by type of event as the key"""
 
         self.last_event : Event  = None
@@ -83,7 +93,7 @@ class EventHandler:
 
     def reset(self):
         """Clears all event listeners"""
-        self.listeners : dict[int, list[Callable]] = {EMPTY_EVENT : [], KEY_EVENT : [], MOVE_MOUSE_EVENT : [], CLICK_MOUSE_EVENT : [], GENERIC_MOUSE_EVENT : []} 
+        self.listeners : dict[int, list[Callable]] = {Event.EMPTY_EVENT : [], Event.KEY_EVENT : [], Event.MOVE_MOUSE_EVENT : [], Event.CLICK_MOUSE_EVENT : [], Event.GENERIC_MOUSE_EVENT : []} 
 
     def key_callback(self, window : glfw._GLFWwindow, key : int, scancode : int, action : int, mods : int):
         """Internal key call back function, it is called when GLFW detects a key event"""
@@ -91,13 +101,13 @@ class EventHandler:
         # Generate the event
         self.last_event = KeyEvent(key=key, action=action)
         # For each function call it and pass the event
-        for func in self.listeners[KEY_EVENT]:
+        for func in self.listeners[Event.KEY_EVENT]:
             func(self.last_event)
 
     def cursor_callback(self, window : glfw._GLFWwindow, xpos : float, ypos : float):
         """Internal cursor call back function, it is called when GLFW detects a cursor event"""
         # Generate the event
-        self.last_event = MouseEvent(pos=(xpos, ypos), type=MOVE_MOUSE_EVENT)
+        self.last_event = MouseEvent(pos=(xpos, ypos), type=Event.MOVE_MOUSE_EVENT)
         # For each function call it and pass the event
-        for func in self.listeners[MOVE_MOUSE_EVENT]:
+        for func in self.listeners[Event.MOVE_MOUSE_EVENT]:
             func(self.last_event)

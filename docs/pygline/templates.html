@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>pygline API documentation</title>
-<meta name="description" content="Welcome to pygline: …" />
+<title>pygline.templates API documentation</title>
+<meta name="description" content="This file stores class templates for convience" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,73 +19,206 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Package <code>pygline</code></h1>
+<h1 class="title">Module <code>pygline.templates</code></h1>
 </header>
 <section id="section-intro">
-<p>Welcome to pygline:</p>
-<p>pygline is the current working and tempory name for a project by Colin Finnie.
-It purpose is to create a system for rapidly prototyping games or just creating simple games.</p>
-<p>My current plan is to use the game engine to develop learning enviornments for AI like the open-ai gym.</p>
-<p>For now this project mostly functions as a way to learn opengl and improve my python skills.</p>
-<p>Thanks for checking it out!</p>
+<p>This file stores class templates for convience</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-Welcome to pygline:
-
-pygline is the current working and tempory name for a project by Colin Finnie.
-It purpose is to create a system for rapidly prototyping games or just creating simple games.
-
-My current plan is to use the game engine to develop learning enviornments for AI like the open-ai gym.
-
-For now this project mostly functions as a way to learn opengl and improve my python skills.
-
-Thanks for checking it out!
+This file stores class templates for convience
 &#34;&#34;&#34;
 
-from pygline.logic import Scene, Game
-from pygline.objects import GameObject
-import pygline.objects.components as components
+class SomeExampleClass:
+    &#34;&#34;&#34;
+    # SomeExampleClass
 
-import pygline.graphics</code></pre>
+    This class demonstrates how doc strings should be written for this project.
+    It also acts as a template
+
+    Attributes:
+        - `attribute1` : `int` - stores an int
+
+    Methods:
+        - `print` -&gt; `None` - prints `attribute1`
+
+    ---
+
+    ## Usage
+
+    Stores an `int` that can be printed
+
+    ---
+
+    ## Notes
+
+    None
+    
+    &#34;&#34;&#34;
+
+    def __init__(self, var1 : int):
+        &#34;&#34;&#34;
+
+        Create SomeClass
+
+        Args:
+            - `var1` : `int` - the value to  be assigned to `attribute1`
+        
+        &#34;&#34;&#34;
+
+        self.attribute1 = var1
+
+    def print(self):
+        &#34;&#34;&#34;
+        
+        Prints `attribute1`
+
+        Args:
+            - None
+
+        Returns:
+            - None
+        
+        &#34;&#34;&#34;
+
+        print(self.attribute1)</code></pre>
 </details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt><code class="name"><a title="pygline.common" href="common.html">pygline.common</a></code></dt>
+<dt id="pygline.templates.SomeExampleClass"><code class="flex name class">
+<span>class <span class="ident">SomeExampleClass</span></span>
+<span>(</span><span>var1: int)</span>
+</code></dt>
 <dd>
-<div class="desc"><p>Common classes and stuctures used through out the whole package</p></div>
-</dd>
-<dt><code class="name"><a title="pygline.graphics" href="graphics/index.html">pygline.graphics</a></code></dt>
+<div class="desc"><h1 id="someexampleclass">SomeExampleClass</h1>
+<p>This class demonstrates how doc strings should be written for this project.
+It also acts as a template</p>
+<h2 id="attributes">Attributes</h2>
+<ul>
+<li><code>attribute1</code> : <code>int</code> - stores an int</li>
+</ul>
+<h2 id="methods">Methods</h2>
+<ul>
+<li><code>print</code> -&gt; <code>None</code> - prints <code>attribute1</code></li>
+</ul>
+<hr>
+<h2 id="usage">Usage</h2>
+<p>Stores an <code>int</code> that can be printed</p>
+<hr>
+<h2 id="notes">Notes</h2>
+<p>None</p>
+<p>Create SomeClass</p>
+<h2 id="args">Args</h2>
+<ul>
+<li><code>var1</code> : <code>int</code> - the value to
+be assigned to <code>attribute1</code></li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SomeExampleClass:
+    &#34;&#34;&#34;
+    # SomeExampleClass
+
+    This class demonstrates how doc strings should be written for this project.
+    It also acts as a template
+
+    Attributes:
+        - `attribute1` : `int` - stores an int
+
+    Methods:
+        - `print` -&gt; `None` - prints `attribute1`
+
+    ---
+
+    ## Usage
+
+    Stores an `int` that can be printed
+
+    ---
+
+    ## Notes
+
+    None
+    
+    &#34;&#34;&#34;
+
+    def __init__(self, var1 : int):
+        &#34;&#34;&#34;
+
+        Create SomeClass
+
+        Args:
+            - `var1` : `int` - the value to  be assigned to `attribute1`
+        
+        &#34;&#34;&#34;
+
+        self.attribute1 = var1
+
+    def print(self):
+        &#34;&#34;&#34;
+        
+        Prints `attribute1`
+
+        Args:
+            - None
+
+        Returns:
+            - None
+        
+        &#34;&#34;&#34;
+
+        print(self.attribute1)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="pygline.templates.SomeExampleClass.print"><code class="name flex">
+<span>def <span class="ident">print</span></span>(<span>self)</span>
+</code></dt>
 <dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="pygline.locals" href="locals.html">pygline.locals</a></code></dt>
-<dd>
-<div class="desc"><p>Constants used throughout the whole package</p></div>
-</dd>
-<dt><code class="name"><a title="pygline.logic" href="logic/index.html">pygline.logic</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="pygline.objects" href="objects/index.html">pygline.objects</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="pygline.templates" href="templates.html">pygline.templates</a></code></dt>
-<dd>
-<div class="desc"><p>This file stores class templates for convience</p></div>
+<div class="desc"><p>Prints <code>attribute1</code></p>
+<h2 id="args">Args</h2>
+<ul>
+<li>None</li>
+</ul>
+<h2 id="returns">Returns</h2>
+<ul>
+<li>None</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def print(self):
+    &#34;&#34;&#34;
+    
+    Prints `attribute1`
+
+    Args:
+        - None
+
+    Returns:
+        - None
+    
+    &#34;&#34;&#34;
+
+    print(self.attribute1)</code></pre>
+</details>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -94,14 +227,19 @@ import pygline.graphics</code></pre>
 <ul></ul>
 </div>
 <ul id="index">
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3>Super-module</h3>
 <ul>
-<li><code><a title="pygline.common" href="common.html">pygline.common</a></code></li>
-<li><code><a title="pygline.graphics" href="graphics/index.html">pygline.graphics</a></code></li>
-<li><code><a title="pygline.locals" href="locals.html">pygline.locals</a></code></li>
-<li><code><a title="pygline.logic" href="logic/index.html">pygline.logic</a></code></li>
-<li><code><a title="pygline.objects" href="objects/index.html">pygline.objects</a></code></li>
-<li><code><a title="pygline.templates" href="templates.html">pygline.templates</a></code></li>
+<li><code><a title="pygline" href="index.html">pygline</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="pygline.templates.SomeExampleClass" href="#pygline.templates.SomeExampleClass">SomeExampleClass</a></code></h4>
+<ul class="">
+<li><code><a title="pygline.templates.SomeExampleClass.print" href="#pygline.templates.SomeExampleClass.print">print</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

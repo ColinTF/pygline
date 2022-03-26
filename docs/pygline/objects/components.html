@@ -53,12 +53,44 @@ class component:
 # rendered to the screen
 class Mesh(component):
     &#34;&#34;&#34;
-    Stores mesh data in the form of vertices and indices
+    # Mesh
+
+    The mesh class acts as a list of `Vertex`s
+
+    Attributes:
+        - `vertices` : `list[Vertex]` - stores all the vertices can be accessed directly or indirectly
+        - `indices` : `list[int]` - order of vertices used to describe the mesh
+
+    Methods:
+        - `normalize()` -&gt; `None` - normalizes all the vertices so that the `Vertex` with the longest length has length one
+
+    ---
+
+    ## Usage
+
+    Assign a `Mesh` to an object to make it renderable. `Mesh` can also be used to describe the collision bounds of an object. 
+    If applicable, like a base shape, use the same object to descibe both for optimization.
+
+    ---
+
+    ## Notes
+
+    None
+    
     &#34;&#34;&#34;
+
+    # 2D Shapes
+    PRIMITE_SQUARE = 0
+    &#34;&#34;&#34;A square using 4 `Vertex`s&#34;&#34;&#34;
+    PRIMITE_TRIANGLE = 1
+    &#34;&#34;&#34;A triangle using 3 `Vertex`s&#34;&#34;&#34;
+    PRIMITE_RIGHT_TRIANGLE = 2
+    &#34;&#34;&#34;A right triangle using 3 `Vertex`s&#34;&#34;&#34;
 
     def __init__(self, owner, scale : np.ndarray = np.ones(2)/10, rel_location : np.ndarray = np.zeros(2), vertices : np.ndarray = None, primitive_shape : int = PRIMITE_SQUARE):
         &#34;&#34;&#34;
-        Create a mesh component controlled by the parent/owner
+        
+        Creates a mesh component controlled by the parent/owner
 
         Args:
             - owner: parent to the component
@@ -79,7 +111,7 @@ class Mesh(component):
         
         # If no mesh is defined make a primitve
         if not vertices:
-            if (primitive_shape == PRIMITE_SQUARE):
+            if (primitive_shape == self.PRIMITE_SQUARE):
                 self.vertices = np.array([-1.0, -1.0,
                                           -1.0,  1.0,
                                            1.0, -1.0,
@@ -88,14 +120,14 @@ class Mesh(component):
                 self.indices = np.array([0, 1, 2,
                                          1, 2, 3], dtype=np.uint32)
 
-            elif (primitive_shape == PRIMITE_TRIANGLE):
+            elif (primitive_shape == self.PRIMITE_TRIANGLE):
                 self.vertices = np.array([ 0.0,  1.0,
                                           -1.0, -1.0,
                                            1.0, -1.0], dtype=np.float32)
 
                 self.indices = np.array([2, 1, 0], dtype=np.uint32)
 
-            elif (primitive_shape == PRIMITE_RIGHT_TRIANGLE):
+            elif (primitive_shape == self.PRIMITE_RIGHT_TRIANGLE):
                 self.vertices = np.array([-1.0, -1.0,
                                           -1.0,  1.0,
                                            1.0,  1.0], dtype=np.float32)
@@ -193,8 +225,25 @@ class RigidBody(component):
 <span>(</span><span>owner, scale: numpy.ndarray = array([0.1, 0.1]), rel_location: numpy.ndarray = array([0., 0.]), vertices: numpy.ndarray = None, primitive_shape: int = 0)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Stores mesh data in the form of vertices and indices</p>
-<p>Create a mesh component controlled by the parent/owner</p>
+<div class="desc"><h1 id="mesh">Mesh</h1>
+<p>The mesh class acts as a list of <code>Vertex</code>s</p>
+<h2 id="attributes">Attributes</h2>
+<ul>
+<li><code>vertices</code> : <code>list[Vertex]</code> - stores all the vertices can be accessed directly or indirectly</li>
+<li><code>indices</code> : <code>list[int]</code> - order of vertices used to describe the mesh</li>
+</ul>
+<h2 id="methods">Methods</h2>
+<ul>
+<li><code>normalize()</code> -&gt; <code>None</code> - normalizes all the vertices so that the <code>Vertex</code> with the longest length has length one</li>
+</ul>
+<hr>
+<h2 id="usage">Usage</h2>
+<p>Assign a <code><a title="pygline.objects.components.Mesh" href="#pygline.objects.components.Mesh">Mesh</a></code> to an object to make it renderable. <code><a title="pygline.objects.components.Mesh" href="#pygline.objects.components.Mesh">Mesh</a></code> can also be used to describe the collision bounds of an object.
+If applicable, like a base shape, use the same object to descibe both for optimization.</p>
+<hr>
+<h2 id="notes">Notes</h2>
+<p>None</p>
+<p>Creates a mesh component controlled by the parent/owner</p>
 <h2 id="args">Args</h2>
 <ul>
 <li>owner: parent to the component</li>
@@ -209,12 +258,44 @@ class RigidBody(component):
 </summary>
 <pre><code class="python">class Mesh(component):
     &#34;&#34;&#34;
-    Stores mesh data in the form of vertices and indices
+    # Mesh
+
+    The mesh class acts as a list of `Vertex`s
+
+    Attributes:
+        - `vertices` : `list[Vertex]` - stores all the vertices can be accessed directly or indirectly
+        - `indices` : `list[int]` - order of vertices used to describe the mesh
+
+    Methods:
+        - `normalize()` -&gt; `None` - normalizes all the vertices so that the `Vertex` with the longest length has length one
+
+    ---
+
+    ## Usage
+
+    Assign a `Mesh` to an object to make it renderable. `Mesh` can also be used to describe the collision bounds of an object. 
+    If applicable, like a base shape, use the same object to descibe both for optimization.
+
+    ---
+
+    ## Notes
+
+    None
+    
     &#34;&#34;&#34;
+
+    # 2D Shapes
+    PRIMITE_SQUARE = 0
+    &#34;&#34;&#34;A square using 4 `Vertex`s&#34;&#34;&#34;
+    PRIMITE_TRIANGLE = 1
+    &#34;&#34;&#34;A triangle using 3 `Vertex`s&#34;&#34;&#34;
+    PRIMITE_RIGHT_TRIANGLE = 2
+    &#34;&#34;&#34;A right triangle using 3 `Vertex`s&#34;&#34;&#34;
 
     def __init__(self, owner, scale : np.ndarray = np.ones(2)/10, rel_location : np.ndarray = np.zeros(2), vertices : np.ndarray = None, primitive_shape : int = PRIMITE_SQUARE):
         &#34;&#34;&#34;
-        Create a mesh component controlled by the parent/owner
+        
+        Creates a mesh component controlled by the parent/owner
 
         Args:
             - owner: parent to the component
@@ -235,7 +316,7 @@ class RigidBody(component):
         
         # If no mesh is defined make a primitve
         if not vertices:
-            if (primitive_shape == PRIMITE_SQUARE):
+            if (primitive_shape == self.PRIMITE_SQUARE):
                 self.vertices = np.array([-1.0, -1.0,
                                           -1.0,  1.0,
                                            1.0, -1.0,
@@ -244,14 +325,14 @@ class RigidBody(component):
                 self.indices = np.array([0, 1, 2,
                                          1, 2, 3], dtype=np.uint32)
 
-            elif (primitive_shape == PRIMITE_TRIANGLE):
+            elif (primitive_shape == self.PRIMITE_TRIANGLE):
                 self.vertices = np.array([ 0.0,  1.0,
                                           -1.0, -1.0,
                                            1.0, -1.0], dtype=np.float32)
 
                 self.indices = np.array([2, 1, 0], dtype=np.uint32)
 
-            elif (primitive_shape == PRIMITE_RIGHT_TRIANGLE):
+            elif (primitive_shape == self.PRIMITE_RIGHT_TRIANGLE):
                 self.vertices = np.array([-1.0, -1.0,
                                           -1.0,  1.0,
                                            1.0,  1.0], dtype=np.float32)
@@ -283,6 +364,21 @@ class RigidBody(component):
 <ul class="hlist">
 <li><a title="pygline.objects.components.component" href="#pygline.objects.components.component">component</a></li>
 </ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pygline.objects.components.Mesh.PRIMITE_RIGHT_TRIANGLE"><code class="name">var <span class="ident">PRIMITE_RIGHT_TRIANGLE</span></code></dt>
+<dd>
+<div class="desc"><p>A right triangle using 3 <code>Vertex</code>s</p></div>
+</dd>
+<dt id="pygline.objects.components.Mesh.PRIMITE_SQUARE"><code class="name">var <span class="ident">PRIMITE_SQUARE</span></code></dt>
+<dd>
+<div class="desc"><p>A square using 4 <code>Vertex</code>s</p></div>
+</dd>
+<dt id="pygline.objects.components.Mesh.PRIMITE_TRIANGLE"><code class="name">var <span class="ident">PRIMITE_TRIANGLE</span></code></dt>
+<dd>
+<div class="desc"><p>A triangle using 3 <code>Vertex</code>s</p></div>
+</dd>
+</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="pygline.objects.components.Mesh.normalize_verts"><code class="name flex">
@@ -539,6 +635,9 @@ class RigidBody(component):
 <li>
 <h4><code><a title="pygline.objects.components.Mesh" href="#pygline.objects.components.Mesh">Mesh</a></code></h4>
 <ul class="">
+<li><code><a title="pygline.objects.components.Mesh.PRIMITE_RIGHT_TRIANGLE" href="#pygline.objects.components.Mesh.PRIMITE_RIGHT_TRIANGLE">PRIMITE_RIGHT_TRIANGLE</a></code></li>
+<li><code><a title="pygline.objects.components.Mesh.PRIMITE_SQUARE" href="#pygline.objects.components.Mesh.PRIMITE_SQUARE">PRIMITE_SQUARE</a></code></li>
+<li><code><a title="pygline.objects.components.Mesh.PRIMITE_TRIANGLE" href="#pygline.objects.components.Mesh.PRIMITE_TRIANGLE">PRIMITE_TRIANGLE</a></code></li>
 <li><code><a title="pygline.objects.components.Mesh.normalize_verts" href="#pygline.objects.components.Mesh.normalize_verts">normalize_verts</a></code></li>
 <li><code><a title="pygline.objects.components.Mesh.update" href="#pygline.objects.components.Mesh.update">update</a></code></li>
 </ul>
