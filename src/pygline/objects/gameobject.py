@@ -1,4 +1,4 @@
-from pygline.objects import components
+from pygline.objects import *
 import numpy as np
 
 from pygline.logic.event import *

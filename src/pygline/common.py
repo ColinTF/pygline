@@ -20,8 +20,8 @@ class Vertex:
 
     Methods:
         - `copy()` -> `Vertex` - returns a copy of the vertex
-        - `get_magnitude()` -> `np.float32` - returns the magnitude of the vertex
-        - `get_brightness()` -> `np.float32` - returns the brightness of the vertex
+        - `magnitude()` -> `np.float32` - returns the magnitude of the vertex
+        - `brightness()` -> `np.float32` - returns the brightness of the vertex
         - `normalize()` -> `None` - normalizes the vertex to a unit vector
 
     ---
@@ -111,11 +111,11 @@ class Vertex:
         """Retuns a copy of the vertex"""
         return Vertex(self.x, self.y, self.z, self.r, self.g, self.b)
 
-    def get_magnitude(self):
+    def magnitude(self):
         """Returns the magnitude of the vertex"""
         return np.sqrt(self.x**2 + self.y**2 + self.z**2)
 
-    def get_brightness(self):
+    def brightness(self):
         """Returns the brightness of the vertex"""
         return np.sqrt(self.r**2 + self.g**2 + self.b**2)
 

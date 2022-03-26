@@ -9,6 +9,8 @@ import os
 
 import pygline as pg
 from pygline.common import Vertex
+from pygline.objects.components import Mesh
+from pygline.locals import *
 
 
 #import our own custom classes
@@ -61,3 +63,5 @@ class Test_Vertex:
         assert Vertex(2, 4, 6) + [1, 2] == Vertex(3, 6, 6)
         assert Vertex(2, 4, 6) * [1, 2] == Vertex(2, 8, 6)
         assert Vertex(5, 2, 8) / Vertex(1, 2, 3) == Vertex(5, 1, 8/3)
+        player = ent.Player("test-player", pos=[0, 0, 0])
+        print(Mesh(player, scale=[1, 1], primitive_shape=pg.PRIMITE_TRIANGLE))

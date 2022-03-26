@@ -16,3 +16,4 @@ from pygline.objects import GameObject
 import pygline.objects.components as components
 
 import pygline.graphics
+from pygline.locals import *

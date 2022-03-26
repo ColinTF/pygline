@@ -1,6 +1,7 @@
 import numpy as np
 from pygline.locals import *
 from pygline.common import Vertex
+# from pygline.objects.gameobject import GameObject
 
 class component:
     """
@@ -52,25 +53,26 @@ class Mesh(component):
         # If no mesh is defined make a primitve
         if not vertices:
             if (primitive_shape == PRIMITE_SQUARE):
-                self.vertices = np.array([-1.0, -1.0,
-                                          -1.0,  1.0,
-                                           1.0, -1.0,
-                                           1.0,  1.0], dtype=np.float32)
+                                           
+                self.vertices = [Vertex(-1.0, -1.0),
+                                 Vertex(-1.0,  1.0),
+                                 Vertex( 1.0, -1.0),
+                                 Vertex( 1.0,  1.0)]
 
                 self.indices = np.array([0, 1, 2,
                                          1, 2, 3], dtype=np.uint32)
 
             elif (primitive_shape == PRIMITE_TRIANGLE):
-                self.vertices = np.array([ 0.0,  1.0,
-                                          -1.0, -1.0,
-                                           1.0, -1.0], dtype=np.float32)
+                self.vertices = [Vertex(-1.0, -1.0),
+                                 Vertex( 1.0, -1.0),
+                                 Vertex( 0.0,  1.0)]
 
                 self.indices = np.array([2, 1, 0], dtype=np.uint32)
 
             elif (primitive_shape == PRIMITE_RIGHT_TRIANGLE):
-                self.vertices = np.array([-1.0, -1.0,
-                                          -1.0,  1.0,
-                                           1.0,  1.0], dtype=np.float32)
+                self.vertices = [Vertex(-1.0, -1.0),
+                                 Vertex(-1.0,  1.0),
+                                 Vertex( 1.0, -1.0)]
 
                 self.indices = np.array([0, 1, 2], dtype=np.uint32)
 
@@ -78,8 +80,8 @@ class Mesh(component):
                 raise Exception("No such primitive exists")
 
         # Seprate into indidual vertices to apply operations
-        for i in range(0, len(self.vertices), 2): 
-            self.vertices[i:i + 2] = self.vertices[i:i + 2] * scale + self.rel_location
+        # for i in range(0, len(self.vertices), 2): 
+        #     self.vertices[i:i + 2] = self.vertices[i:i + 2] * scale + self.rel_location
 
             
 
@@ -95,7 +97,12 @@ class Mesh(component):
     def update(self, delta_time):
         super().update(delta_time)
 
-        
+    def __repr__(self) -> str:
+        string = "Mesh(["
+        for i in self.indices: 
+            string += str(self.vertices[i]) + ", "
+
+        return string + "])"
 
 
 # Allow the object to interact with the world
