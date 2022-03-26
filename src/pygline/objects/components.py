@@ -53,7 +53,7 @@ class Mesh(component):
     PRIMITIVE_TRIANGLE = 1
     """A triangle using 3 `Vertex`s"""
     PRIMITIVE_RIGHT_TRIANGLE = 2
-    """A right triangle using 3 `Vertex`s"""
+    """A right triangle using 3 `Vertex`"""
 
     def __init__(self, owner, scale : np.ndarray = np.ones(3)/10, rel_location : np.ndarray = np.zeros(2), vertices : np.ndarray = None, primitive_shape : int = PRIMITIVE_SQUARE):
         """

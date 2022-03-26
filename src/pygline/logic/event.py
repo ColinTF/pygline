@@ -25,7 +25,7 @@ class Event:
     CLICK_MOUSE_EVENT = 3
     """The mouse has been clicked"""
     MOVE_MOUSE_EVENT = 4
-    """The mouse has moved"""
+    """The mouse has been moved"""
 
     #time : float = field(default_factory=glfw.get_time(), init=False)
     type : int = field(default=EMPTY_EVENT, init=False)
