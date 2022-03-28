@@ -10,8 +10,8 @@ class Player(pg.GameObject):
     
     def __init__(self, name, pos=np.zeros(2), tags=[]):
         super().__init__(name, pos=pos, tags=tags)
-        self.mesh =  pg.components.Mesh(self, scale=[0.01, 0.01], primitive_shape=pgl.PRIMITE_SQUARE)
-        self.rigidbody = pg.components.RigidBody(self, mass=5)
+        self.mesh =  pg.components.Mesh(scale=[0.01, 0.01], primitive_shape=pg.components.Mesh.PRIMITIVE_SQUARE)
+        self.rigidbody = pg.components.RigidBody(mass=5)
 
         self.speed = 200
 

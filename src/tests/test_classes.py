@@ -20,7 +20,7 @@ from tests import entity as ent
 
 class Test_Vertex:
 
-    def test_one(self):
+    def test_creation(self):
 
         print("\n\n")
 
@@ -50,7 +50,7 @@ class Test_Vertex:
         print(vert4.__dict__)
         # assert Vertex(0.2, 0.2) > Vertex(0, 0.5) == False
 
-    def test_two(self):
+    def test_operators(self):
 
         assert Vertex(1) > 0.5
         assert Vertex(1) > Vertex(0.5)
@@ -63,5 +63,9 @@ class Test_Vertex:
         assert Vertex(2, 4, 6) + [1, 2] == Vertex(3, 6, 6)
         assert Vertex(2, 4, 6) * [1, 2] == Vertex(2, 8, 6)
         assert Vertex(5, 2, 8) / Vertex(1, 2, 3) == Vertex(5, 1, 8/3)
+
+class Test_Mesh:
+
+    def test_creation(self):
         player = ent.Player("test-player", pos=[0, 0, 0])
-        print(Mesh(player, scale=[1, 1], primitive_shape=pg.PRIMITE_TRIANGLE))
+        print(Mesh(scale=[1, 1], primitive_shape=pg.components.Mesh.PRIMITIVE_TRIANGLE))

@@ -1,4 +1,4 @@
-from pygline.objects import *
+import pygline.objects.components as comp
 import numpy as np
 
 from pygline.logic.event import *
@@ -51,12 +51,12 @@ class GameObject:
             resposibilty(delta_time)
 
     # Add components as atrributes and add their update functions to the responsibilties list
-    def add_component(self, name : str, component: components.component):
+    def add_component(self, name : str, component: comp.component):
         setattr(self, name, component)
         self.components.append(name)
         self.update_responsibilities.append(component.update)
 
-    def rm_component(self, name : str, component: components.component):
+    def rm_component(self, name : str, component: comp.component):
         self.components.remove(name)
         self.component.kill()
         self.update_responsibilities.remove(component.update)

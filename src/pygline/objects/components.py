@@ -13,8 +13,14 @@ class component:
         - #TODO add more components
     """
 
-    def __init__(self, owner):
-        self.owner = owner
+    def __init__(self):
+        pass
+
+    def update(self):
+        pass
+
+    def kill(self):
+        pass
 
 # Allow the object to be re
 # rendered to the screen
@@ -56,7 +62,7 @@ class Mesh(component):
     PRIMITIVE_RIGHT_TRIANGLE = 2
     """A right triangle using 3 `Vertex`"""
 
-    def __init__(self, owner, scale : np.ndarray = np.ones(3)/10, rel_location : np.ndarray = np.zeros(2), vertices : np.ndarray = None, primitive_shape : int = PRIMITIVE_SQUARE):
+    def __init__(self, scale : np.ndarray = np.ones(3)/10, rel_location : np.ndarray = np.zeros(2), vertices : np.ndarray = None, primitive_shape : int = PRIMITIVE_SQUARE):
         """
 
         Create a new mesh and set the owners tag to visible.
@@ -70,10 +76,10 @@ class Mesh(component):
 
         """
 
-        super().__init__(owner)
+        super().__init__()
 
-        # By default give the owner a visible tag
-        self.owner.add_tag('visible')
+        # # By default give the owner a visible tag
+        # self.owner.add_tag('visible')
 
         self.rel_location = rel_location
         self.rel_rotation = 0
@@ -82,7 +88,7 @@ class Mesh(component):
         
         # If no mesh is defined make a primitve
         if not vertices:
-            if (primitive_shape == Mesh.PRIMITE_SQUARE):
+            if (primitive_shape == self.PRIMITIVE_SQUARE):
                                            
                 self.vertices = [Vertex(-1.0, -1.0),
                                  Vertex(-1.0,  1.0),
@@ -92,14 +98,14 @@ class Mesh(component):
                 self.indices = np.array([0, 1, 2,
                                          1, 2, 3], dtype=np.uint32)
 
-            elif (primitive_shape == Mesh.PRIMITE_TRIANGLE):
+            elif (primitive_shape == self.PRIMITIVE_TRIANGLE):
                 self.vertices = [Vertex(-1.0, -1.0),
                                  Vertex( 1.0, -1.0),
                                  Vertex( 0.0,  1.0)]
 
                 self.indices = np.array([2, 1, 0], dtype=np.uint32)
 
-            elif (primitive_shape == Mesh.PRIMITE_RIGHT_TRIANGLE):
+            elif (primitive_shape == self.PRIMITIVE_RIGHT_TRIANGLE):
                 self.vertices = [Vertex(-1.0, -1.0),
                                  Vertex(-1.0,  1.0),
                                  Vertex( 1.0, -1.0)]
@@ -139,22 +145,22 @@ class Mesh(component):
 class RigidBody(component):
 
 
-    def __init__(self, owner, mass=1, friction=0.1, collision=True, gravity=False, passive=False):
-        super().__init__(owner)
+    def __init__(self, mass=1, friction=0.1, collision=True, gravity=False, passive=False):
+        super().__init__()
 
         self.mass = mass
 
-        # Add appropriate tags to parent
-        if collision:
-            self.owner.add_tag('collision')
-        if gravity:
-            self.owner.add_tag('gravity')
-        if passive:
-            self.owner.add_tag('passive')
+        # # Add appropriate tags to parent
+        # if collision:
+        #     self.owner.add_tag('collision')
+        # if gravity:
+        #     self.owner.add_tag('gravity')
+        # if passive:
+        #     self.owner.add_tag('passive')
 
         self.friction = friction
 
-        self.forces = np.array([0, self.mass * GRAVITY]) if self.owner.has_tags(['gravity']) else np.zeros(2)
+        # self.forces = np.array([0, self.mass * GRAVITY]) if self.owner.has_tags(['gravity']) else np.zeros(2)
         self.acceleration = np.zeros(2)
         self.velocity = np.zeros(2)
 
