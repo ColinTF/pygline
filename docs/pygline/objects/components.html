@@ -35,7 +35,7 @@ class component:
     Components are attached to objects to make them unqiue and interact
 
     Components can be defined by the user but built-ins include:
-        - Physics
+        - RigidBody
         - Mesh
         - #TODO add more components
     &#34;&#34;&#34;
@@ -43,30 +43,60 @@ class component:
     def __init__(self, owner):
         self.owner = owner
 
-    def update(self, delta_time):
-        pass
-
-    def kill(self):
-        pass
-
 # Allow the object to be re
 # rendered to the screen
 class Mesh(component):
     &#34;&#34;&#34;
-    Stores mesh data in the form of vertices and indices
+    # Mesh
+
+    The mesh class acts as a list of `Vertex`s
+
+    Attributes:
+        - `owner` : `GameObject` - the owner who controls the mesh
+        - `vertices` : `list[Vertex]` - stores all the vertices can be accessed directly or indirectly
+        - `indices` : `list[int]` - order of vertices used to describe the mesh
+        - `scale` : `np.ndarray` - the xyz scale of the mesh
+
+    Methods:
+        - `normalize()` -&gt; `None` - normalizes all the vertices so that the `Vertex` with the longest length has length one
+
+    ---
+
+    ## Usage
+
+    Assign a `Mesh` to an object to make it renderable. `Mesh` can also be used to describe the collision bounds of an object. 
+    If applicable, like a base shape, use the same object to descibe both for optimization.
+
+    ---
+
+    ## Notes
+
+    None
+
     &#34;&#34;&#34;
 
-    def __init__(self, owner, scale : np.ndarray = np.ones(2)/10, rel_location : np.ndarray = np.zeros(2), vertices : np.ndarray = None, primitive_shape : int = PRIMITE_SQUARE):
+    # 2D Shapes
+    PRIMITIVE_SQUARE = 0
+    &#34;&#34;&#34;A square using 4 `Vertex`s&#34;&#34;&#34;
+    PRIMITIVE_TRIANGLE = 1
+    &#34;&#34;&#34;A triangle using 3 `Vertex`s&#34;&#34;&#34;
+    PRIMITIVE_RIGHT_TRIANGLE = 2
+    &#34;&#34;&#34;A right triangle using 3 `Vertex`s&#34;&#34;&#34;
+
+    def __init__(self, owner, scale : np.ndarray = np.ones(3)/10, rel_location : np.ndarray = np.zeros(2), vertices : np.ndarray = None, primitive_shape : int = PRIMITIVE_SQUARE):
         &#34;&#34;&#34;
-        Create a mesh component controlled by the parent/owner
+
+        Create a new mesh and set the owners tag to visible.
 
         Args:
-            - owner: parent to the component
-            - scale: relative scale to owner
-            - rel_location: relative postion to owner
-            - vertices: 2d numpy array of vertices
-            - primite_shape: a pre-defined primitive, used if no vertices are given
+            - `owner` : `GameObject` - the owner who controls the mesh
+            - `rel_location` : `np.ndarray` - the xyz relative location of the mesh to the owner
+            - `scale` : `np.ndarray` - the xyz scale to give the mesh
+            - `vertices` : `list[Vertex]` - sets the vertices of the mesh, overides the primitive
+            - `primitive_shape` : `int` - the shape of the mesh if no vertices are given
+
         &#34;&#34;&#34;
+
         super().__init__(owner)
 
         # By default give the owner a visible tag
@@ -79,7 +109,7 @@ class Mesh(component):
         
         # If no mesh is defined make a primitve
         if not vertices:
-            if (primitive_shape == PRIMITE_SQUARE):
+            if (primitive_shape == self.PRIMITIVE_SQUARE):
                 self.vertices = np.array([-1.0, -1.0,
                                           -1.0,  1.0,
                                            1.0, -1.0,
@@ -88,14 +118,14 @@ class Mesh(component):
                 self.indices = np.array([0, 1, 2,
                                          1, 2, 3], dtype=np.uint32)
 
-            elif (primitive_shape == PRIMITE_TRIANGLE):
+            elif (primitive_shape == self.PRIMITIVE_TRIANGLE):
                 self.vertices = np.array([ 0.0,  1.0,
                                           -1.0, -1.0,
                                            1.0, -1.0], dtype=np.float32)
 
                 self.indices = np.array([2, 1, 0], dtype=np.uint32)
 
-            elif (primitive_shape == PRIMITE_RIGHT_TRIANGLE):
+            elif (primitive_shape == self.PRIMITIVE_RIGHT_TRIANGLE):
                 self.vertices = np.array([-1.0, -1.0,
                                           -1.0,  1.0,
                                            1.0,  1.0], dtype=np.float32)
@@ -116,12 +146,6 @@ class Mesh(component):
     def normalize_verts():
         &#34;&#34;&#34;Normalize the whole matrix of vertices in the mesh to have length one&#34;&#34;&#34;
         pass
-
-
-
-    # Draws the surface to the screen at its position
-    def update(self, delta_time):
-        super().update(delta_time)
 
         
 
@@ -190,18 +214,37 @@ class RigidBody(component):
 <dl>
 <dt id="pygline.objects.components.Mesh"><code class="flex name class">
 <span>class <span class="ident">Mesh</span></span>
-<span>(</span><span>owner, scale: numpy.ndarray = array([0.1, 0.1]), rel_location: numpy.ndarray = array([0., 0.]), vertices: numpy.ndarray = None, primitive_shape: int = 0)</span>
+<span>(</span><span>owner, scale: numpy.ndarray = array([0.1, 0.1, 0.1]), rel_location: numpy.ndarray = array([0., 0.]), vertices: numpy.ndarray = None, primitive_shape: int = 0)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Stores mesh data in the form of vertices and indices</p>
-<p>Create a mesh component controlled by the parent/owner</p>
+<div class="desc"><h1 id="mesh">Mesh</h1>
+<p>The mesh class acts as a list of <code>Vertex</code>s</p>
+<h2 id="attributes">Attributes</h2>
+<ul>
+<li><code>owner</code> : <code>GameObject</code> - the owner who controls the mesh</li>
+<li><code>vertices</code> : <code>list[Vertex]</code> - stores all the vertices can be accessed directly or indirectly</li>
+<li><code>indices</code> : <code>list[int]</code> - order of vertices used to describe the mesh</li>
+<li><code>scale</code> : <code>np.ndarray</code> - the xyz scale of the mesh</li>
+</ul>
+<h2 id="methods">Methods</h2>
+<ul>
+<li><code>normalize()</code> -&gt; <code>None</code> - normalizes all the vertices so that the <code>Vertex</code> with the longest length has length one</li>
+</ul>
+<hr>
+<h2 id="usage">Usage</h2>
+<p>Assign a <code><a title="pygline.objects.components.Mesh" href="#pygline.objects.components.Mesh">Mesh</a></code> to an object to make it renderable. <code><a title="pygline.objects.components.Mesh" href="#pygline.objects.components.Mesh">Mesh</a></code> can also be used to describe the collision bounds of an object.
+If applicable, like a base shape, use the same object to descibe both for optimization.</p>
+<hr>
+<h2 id="notes">Notes</h2>
+<p>None</p>
+<p>Create a new mesh and set the owners tag to visible.</p>
 <h2 id="args">Args</h2>
 <ul>
-<li>owner: parent to the component</li>
-<li>scale: relative scale to owner</li>
-<li>rel_location: relative postion to owner</li>
-<li>vertices: 2d numpy array of vertices</li>
-<li>primite_shape: a pre-defined primitive, used if no vertices are given</li>
+<li><code>owner</code> : <code>GameObject</code> - the owner who controls the mesh</li>
+<li><code>rel_location</code> : <code>np.ndarray</code> - the xyz relative location of the mesh to the owner</li>
+<li><code>scale</code> : <code>np.ndarray</code> - the xyz scale to give the mesh</li>
+<li><code>vertices</code> : <code>list[Vertex]</code> - sets the vertices of the mesh, overides the primitive</li>
+<li><code>primitive_shape</code> : <code>int</code> - the shape of the mesh if no vertices are given</li>
 </ul></div>
 <details class="source">
 <summary>
@@ -209,20 +252,56 @@ class RigidBody(component):
 </summary>
 <pre><code class="python">class Mesh(component):
     &#34;&#34;&#34;
-    Stores mesh data in the form of vertices and indices
+    # Mesh
+
+    The mesh class acts as a list of `Vertex`s
+
+    Attributes:
+        - `owner` : `GameObject` - the owner who controls the mesh
+        - `vertices` : `list[Vertex]` - stores all the vertices can be accessed directly or indirectly
+        - `indices` : `list[int]` - order of vertices used to describe the mesh
+        - `scale` : `np.ndarray` - the xyz scale of the mesh
+
+    Methods:
+        - `normalize()` -&gt; `None` - normalizes all the vertices so that the `Vertex` with the longest length has length one
+
+    ---
+
+    ## Usage
+
+    Assign a `Mesh` to an object to make it renderable. `Mesh` can also be used to describe the collision bounds of an object. 
+    If applicable, like a base shape, use the same object to descibe both for optimization.
+
+    ---
+
+    ## Notes
+
+    None
+
     &#34;&#34;&#34;
 
-    def __init__(self, owner, scale : np.ndarray = np.ones(2)/10, rel_location : np.ndarray = np.zeros(2), vertices : np.ndarray = None, primitive_shape : int = PRIMITE_SQUARE):
+    # 2D Shapes
+    PRIMITIVE_SQUARE = 0
+    &#34;&#34;&#34;A square using 4 `Vertex`s&#34;&#34;&#34;
+    PRIMITIVE_TRIANGLE = 1
+    &#34;&#34;&#34;A triangle using 3 `Vertex`s&#34;&#34;&#34;
+    PRIMITIVE_RIGHT_TRIANGLE = 2
+    &#34;&#34;&#34;A right triangle using 3 `Vertex`s&#34;&#34;&#34;
+
+    def __init__(self, owner, scale : np.ndarray = np.ones(3)/10, rel_location : np.ndarray = np.zeros(2), vertices : np.ndarray = None, primitive_shape : int = PRIMITIVE_SQUARE):
         &#34;&#34;&#34;
-        Create a mesh component controlled by the parent/owner
+
+        Create a new mesh and set the owners tag to visible.
 
         Args:
-            - owner: parent to the component
-            - scale: relative scale to owner
-            - rel_location: relative postion to owner
-            - vertices: 2d numpy array of vertices
-            - primite_shape: a pre-defined primitive, used if no vertices are given
+            - `owner` : `GameObject` - the owner who controls the mesh
+            - `rel_location` : `np.ndarray` - the xyz relative location of the mesh to the owner
+            - `scale` : `np.ndarray` - the xyz scale to give the mesh
+            - `vertices` : `list[Vertex]` - sets the vertices of the mesh, overides the primitive
+            - `primitive_shape` : `int` - the shape of the mesh if no vertices are given
+
         &#34;&#34;&#34;
+
         super().__init__(owner)
 
         # By default give the owner a visible tag
@@ -235,7 +314,7 @@ class RigidBody(component):
         
         # If no mesh is defined make a primitve
         if not vertices:
-            if (primitive_shape == PRIMITE_SQUARE):
+            if (primitive_shape == self.PRIMITIVE_SQUARE):
                 self.vertices = np.array([-1.0, -1.0,
                                           -1.0,  1.0,
                                            1.0, -1.0,
@@ -244,14 +323,14 @@ class RigidBody(component):
                 self.indices = np.array([0, 1, 2,
                                          1, 2, 3], dtype=np.uint32)
 
-            elif (primitive_shape == PRIMITE_TRIANGLE):
+            elif (primitive_shape == self.PRIMITIVE_TRIANGLE):
                 self.vertices = np.array([ 0.0,  1.0,
                                           -1.0, -1.0,
                                            1.0, -1.0], dtype=np.float32)
 
                 self.indices = np.array([2, 1, 0], dtype=np.uint32)
 
-            elif (primitive_shape == PRIMITE_RIGHT_TRIANGLE):
+            elif (primitive_shape == self.PRIMITIVE_RIGHT_TRIANGLE):
                 self.vertices = np.array([-1.0, -1.0,
                                           -1.0,  1.0,
                                            1.0,  1.0], dtype=np.float32)
@@ -271,18 +350,27 @@ class RigidBody(component):
 
     def normalize_verts():
         &#34;&#34;&#34;Normalize the whole matrix of vertices in the mesh to have length one&#34;&#34;&#34;
-        pass
-
-
-
-    # Draws the surface to the screen at its position
-    def update(self, delta_time):
-        super().update(delta_time)</code></pre>
+        pass</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="pygline.objects.components.component" href="#pygline.objects.components.component">component</a></li>
 </ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pygline.objects.components.Mesh.PRIMITIVE_RIGHT_TRIANGLE"><code class="name">var <span class="ident">PRIMITIVE_RIGHT_TRIANGLE</span></code></dt>
+<dd>
+<div class="desc"><p>A right triangle using 3 <code>Vertex</code>s</p></div>
+</dd>
+<dt id="pygline.objects.components.Mesh.PRIMITIVE_SQUARE"><code class="name">var <span class="ident">PRIMITIVE_SQUARE</span></code></dt>
+<dd>
+<div class="desc"><p>A square using 4 <code>Vertex</code>s</p></div>
+</dd>
+<dt id="pygline.objects.components.Mesh.PRIMITIVE_TRIANGLE"><code class="name">var <span class="ident">PRIMITIVE_TRIANGLE</span></code></dt>
+<dd>
+<div class="desc"><p>A triangle using 3 <code>Vertex</code>s</p></div>
+</dd>
+</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="pygline.objects.components.Mesh.normalize_verts"><code class="name flex">
@@ -299,19 +387,6 @@ class RigidBody(component):
     pass</code></pre>
 </details>
 </dd>
-<dt id="pygline.objects.components.Mesh.update"><code class="name flex">
-<span>def <span class="ident">update</span></span>(<span>self, delta_time)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def update(self, delta_time):
-    super().update(delta_time)</code></pre>
-</details>
-</dd>
 </dl>
 </dd>
 <dt id="pygline.objects.components.RigidBody"><code class="flex name class">
@@ -321,7 +396,7 @@ class RigidBody(component):
 <dd>
 <div class="desc"><p>Components are attached to objects to make them unqiue and interact</p>
 <p>Components can be defined by the user but built-ins include:
-- Physics
+- RigidBody
 - Mesh
 - #TODO add more components</p></div>
 <details class="source">
@@ -459,7 +534,7 @@ class RigidBody(component):
 <dd>
 <div class="desc"><p>Components are attached to objects to make them unqiue and interact</p>
 <p>Components can be defined by the user but built-ins include:
-- Physics
+- RigidBody
 - Mesh
 - #TODO add more components</p></div>
 <details class="source">
@@ -471,54 +546,19 @@ class RigidBody(component):
     Components are attached to objects to make them unqiue and interact
 
     Components can be defined by the user but built-ins include:
-        - Physics
+        - RigidBody
         - Mesh
         - #TODO add more components
     &#34;&#34;&#34;
 
     def __init__(self, owner):
-        self.owner = owner
-
-    def update(self, delta_time):
-        pass
-
-    def kill(self):
-        pass</code></pre>
+        self.owner = owner</code></pre>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="pygline.objects.components.Mesh" href="#pygline.objects.components.Mesh">Mesh</a></li>
 <li><a title="pygline.objects.components.RigidBody" href="#pygline.objects.components.RigidBody">RigidBody</a></li>
 </ul>
-<h3>Methods</h3>
-<dl>
-<dt id="pygline.objects.components.component.kill"><code class="name flex">
-<span>def <span class="ident">kill</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def kill(self):
-    pass</code></pre>
-</details>
-</dd>
-<dt id="pygline.objects.components.component.update"><code class="name flex">
-<span>def <span class="ident">update</span></span>(<span>self, delta_time)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def update(self, delta_time):
-    pass</code></pre>
-</details>
-</dd>
-</dl>
 </dd>
 </dl>
 </section>
@@ -539,8 +579,10 @@ class RigidBody(component):
 <li>
 <h4><code><a title="pygline.objects.components.Mesh" href="#pygline.objects.components.Mesh">Mesh</a></code></h4>
 <ul class="">
+<li><code><a title="pygline.objects.components.Mesh.PRIMITIVE_RIGHT_TRIANGLE" href="#pygline.objects.components.Mesh.PRIMITIVE_RIGHT_TRIANGLE">PRIMITIVE_RIGHT_TRIANGLE</a></code></li>
+<li><code><a title="pygline.objects.components.Mesh.PRIMITIVE_SQUARE" href="#pygline.objects.components.Mesh.PRIMITIVE_SQUARE">PRIMITIVE_SQUARE</a></code></li>
+<li><code><a title="pygline.objects.components.Mesh.PRIMITIVE_TRIANGLE" href="#pygline.objects.components.Mesh.PRIMITIVE_TRIANGLE">PRIMITIVE_TRIANGLE</a></code></li>
 <li><code><a title="pygline.objects.components.Mesh.normalize_verts" href="#pygline.objects.components.Mesh.normalize_verts">normalize_verts</a></code></li>
-<li><code><a title="pygline.objects.components.Mesh.update" href="#pygline.objects.components.Mesh.update">update</a></code></li>
 </ul>
 </li>
 <li>
@@ -554,10 +596,6 @@ class RigidBody(component):
 </li>
 <li>
 <h4><code><a title="pygline.objects.components.component" href="#pygline.objects.components.component">component</a></code></h4>
-<ul class="">
-<li><code><a title="pygline.objects.components.component.kill" href="#pygline.objects.components.component.kill">kill</a></code></li>
-<li><code><a title="pygline.objects.components.component.update" href="#pygline.objects.components.component.update">update</a></code></li>
-</ul>
 </li>
 </ul>
 </li>

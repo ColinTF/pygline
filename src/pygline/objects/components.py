@@ -8,7 +8,7 @@ class component:
     Components are attached to objects to make them unqiue and interact
 
     Components can be defined by the user but built-ins include:
-        - Physics
+        - RigidBody
         - Mesh
         - #TODO add more components
     """
@@ -16,30 +16,60 @@ class component:
     def __init__(self, owner):
         self.owner = owner
 
-    def update(self, delta_time):
-        pass
-
-    def kill(self):
-        pass
-
 # Allow the object to be re
 # rendered to the screen
 class Mesh(component):
     """
-    Stores mesh data in the form of vertices and indices
+    # Mesh
+
+    The mesh class acts as a list of `Vertex`s
+
+    Attributes:
+        - `owner` : `GameObject` - the owner who controls the mesh
+        - `vertices` : `list[Vertex]` - stores all the vertices can be accessed directly or indirectly
+        - `indices` : `list[int]` - order of vertices used to describe the mesh
+        - `scale` : `np.ndarray` - the xyz scale of the mesh
+
+    Methods:
+        - `normalize()` -> `None` - normalizes all the vertices so that the `Vertex` with the longest length has length one
+
+    ---
+
+    ## Usage
+
+    Assign a `Mesh` to an object to make it renderable. `Mesh` can also be used to describe the collision bounds of an object. 
+    If applicable, like a base shape, use the same object to descibe both for optimization.
+
+    ---
+
+    ## Notes
+
+    None
+
     """
 
-    def __init__(self, owner, scale : np.ndarray = np.ones(2)/10, rel_location : np.ndarray = np.zeros(2), vertices : np.ndarray = None, primitive_shape : int = PRIMITE_SQUARE):
+    # 2D Shapes
+    PRIMITIVE_SQUARE = 0
+    """A square using 4 `Vertex`s"""
+    PRIMITIVE_TRIANGLE = 1
+    """A triangle using 3 `Vertex`s"""
+    PRIMITIVE_RIGHT_TRIANGLE = 2
+    """A right triangle using 3 `Vertex`"""
+
+    def __init__(self, owner, scale : np.ndarray = np.ones(3)/10, rel_location : np.ndarray = np.zeros(2), vertices : np.ndarray = None, primitive_shape : int = PRIMITIVE_SQUARE):
         """
-        Create a mesh component controlled by the parent/owner
+
+        Create a new mesh and set the owners tag to visible.
 
         Args:
-            - owner: parent to the component
-            - scale: relative scale to owner
-            - rel_location: relative postion to owner
-            - vertices: 2d numpy array of vertices
-            - primite_shape: a pre-defined primitive, used if no vertices are given
+            - `owner` : `GameObject` - the owner who controls the mesh
+            - `rel_location` : `np.ndarray` - the xyz relative location of the mesh to the owner
+            - `scale` : `np.ndarray` - the xyz scale to give the mesh
+            - `vertices` : `list[Vertex]` - sets the vertices of the mesh, overides the primitive
+            - `primitive_shape` : `int` - the shape of the mesh if no vertices are given
+
         """
+
         super().__init__(owner)
 
         # By default give the owner a visible tag
@@ -52,7 +82,7 @@ class Mesh(component):
         
         # If no mesh is defined make a primitve
         if not vertices:
-            if (primitive_shape == PRIMITE_SQUARE):
+            if (primitive_shape == Mesh.PRIMITE_SQUARE):
                                            
                 self.vertices = [Vertex(-1.0, -1.0),
                                  Vertex(-1.0,  1.0),
@@ -62,14 +92,14 @@ class Mesh(component):
                 self.indices = np.array([0, 1, 2,
                                          1, 2, 3], dtype=np.uint32)
 
-            elif (primitive_shape == PRIMITE_TRIANGLE):
+            elif (primitive_shape == Mesh.PRIMITE_TRIANGLE):
                 self.vertices = [Vertex(-1.0, -1.0),
                                  Vertex( 1.0, -1.0),
                                  Vertex( 0.0,  1.0)]
 
                 self.indices = np.array([2, 1, 0], dtype=np.uint32)
 
-            elif (primitive_shape == PRIMITE_RIGHT_TRIANGLE):
+            elif (primitive_shape == Mesh.PRIMITE_RIGHT_TRIANGLE):
                 self.vertices = [Vertex(-1.0, -1.0),
                                  Vertex(-1.0,  1.0),
                                  Vertex( 1.0, -1.0)]

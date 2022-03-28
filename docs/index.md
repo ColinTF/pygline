@@ -16,11 +16,13 @@ My personal goal is to make game development easier and more accessible.
 - [numpy](https://numpy.org/)
 	- The package we use for math
 	- `pip install numpy`
- 
+
+
 ## Documentation
  
- The docs are the website hosted [here](https://colintf.github.io/pygline/). Please be patient as the docs may not be always update the package while under development.
+The docs are hosted [here](pygline/index.html). Please be patient as the docs may not be always update the package while under development.
  
 ### Notes
-Originally the project was to be a light weight wrapper for pygame. However it was decided to be expanded. Later, during testing, pygame was realized to not fit the needs of the new goals. For example, simple rotations of a square with pygame were very slow and intensive.
-
+Originally the project was to be a light weight wrapper for pygame. However it was decided to be expanded.
+Later, during testing, pygame was realized to not fit the needs of the new goals. 
+For example, simple rotations of a square with pygame were very slow and intensive.

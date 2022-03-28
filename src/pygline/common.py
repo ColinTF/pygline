@@ -90,7 +90,7 @@ class Vertex:
         self.y : np.float32 = np.float32(args[1]) if args_length >= 2 else default
         """Y postion as a float"""
         self.z : np.float32 = np.float32(args[2]) if args_length >= 3 else default
-        """Z postion as a flo  at"""
+        """Z postion as a float"""
 
         # Set r,g,b values if the args exists else set them to 0
         self.r : np.float32 = np.float32(args[3]) if args_length >= 4 else default
